@@ -37,7 +37,7 @@ namespace AGS.Player
 		private void Update()
 		{
 			MoveByMouse ();
-
+			Attack ();
 		}
 
 		private Vector3 MoveByKeys()
@@ -90,6 +90,16 @@ namespace AGS.Player
 
 				}
 			}
+		}
+
+		private void Attack()
+		{
+			int attack = 0;
+			if (Input.GetMouseButtonDown (0)) {
+				attack = 1;
+				m_Animator.SetInteger("Attack", attack);
+			}
+
 		}
 
 		// Fixed update is called in sync with physics
