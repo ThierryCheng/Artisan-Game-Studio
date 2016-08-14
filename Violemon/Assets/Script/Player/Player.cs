@@ -14,7 +14,7 @@ namespace AGS.Player
 		[SerializeField] float m_GroundCheckDistance = 0.3f;
 		
 		Rigidbody m_Rigidbody;
-		//Animator m_Animator;
+		//Animator  m_Animator;
 		const float k_Half = 0.5f;
 		float m_TurnAmount;
 		float m_ForwardAmount;
