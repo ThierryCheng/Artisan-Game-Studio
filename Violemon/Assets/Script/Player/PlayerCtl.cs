@@ -10,7 +10,8 @@ namespace AGS.Player
 		private Transform m_Cam;                  // A reference to the main camera in the scenes transform
 		private Vector3 m_CamForward;             // The current forward direction of the camera
 		private Vector3 m_Move;
-		private bool mouseDown;
+		private Vector3 m_TargetPosition;
+		private GameObject m_HitGameObj;
 		private int groundLayerIndex;
 		private Animator m_Animator;
 		private void Start()
@@ -31,6 +32,7 @@ namespace AGS.Player
 			m_Animator = GetComponent<Animator>();
 			m_Player = GetComponent<Player>();
 			groundLayerIndex = LayerMask.GetMask ("GroundCollider");
+
 		}
 		
 		
@@ -68,36 +70,69 @@ namespace AGS.Player
 
 		private void MoveByMouse()
 		{
-			if (Input.GetMouseButtonDown (1)) {
-				mouseDown = true;
-				m_Animator.SetBool("Run", true);
+			if (Input.GetMouseButton (1)) {
+				//if(m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")){
+				//    m_Animator.SetBool("Run", true);
+				//}
+				GetMouseScreenPointToRayHitPosition();
+				m_Player.SetMoveTarget(m_TargetPosition);
 			}
-			else if(Input.GetMouseButtonUp (1))
+
+			/*if (Input.GetMouseButton (1) )
 			{
-				mouseDown = false;
-				m_Animator.SetBool("Run", false);
+				Debug.Log ("hold");
 			}
-			if(mouseDown){
-				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-				RaycastHit hitInfo;
-				if (Physics.Raycast (ray, out hitInfo, 1000, groundLayerIndex)) {
-					//Debug.Log ("111");
-					Vector3 target = hitInfo.point;
-					m_Move = target - transform.position;
-					m_Move = Vector3.Scale(m_Move, new Vector3(1, 0, 1)).normalized;
+			if (Input.GetMouseButtonDown (1) )
+			{
+				Debug.Log ("down");
+			}
+			if (Input.GetMouseButtonUp (1) )
+			{
+				Debug.Log ("up");
+			}*/
+		}
 
+		private void GetMouseScreenPointToRayHitPosition()
+		{
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+			RaycastHit hitInfo;
+			if (Physics.Raycast (ray, out hitInfo, 100, groundLayerIndex)) {
+				//Debug.Log ("111");
+				m_TargetPosition = hitInfo.point;
 
+			}
+			else
+			{
+				m_TargetPosition = Vector3.zero;
 
-				}
+			}
+
+	    }
+
+		private void GetMouseScreenPointToRayHitTarget()
+		{
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+			RaycastHit hitInfo;
+			if (Physics.Raycast (ray, out hitInfo, 100) && hitInfo.collider.tag == "Human") {
+				Debug.Log ("hit target human");
+				m_HitGameObj = hitInfo.collider.gameObject;
+
+			}
+			else
+			{
+				m_HitGameObj = null;
 			}
 		}
 
 		private void Attack()
 		{
-			int attack = 0;
-			if (Input.GetMouseButtonDown (0)) {
-				attack = 1;
-				m_Animator.SetInteger("Attack", attack);
+			if (Input.GetMouseButtonUp (0)) {
+				GetMouseScreenPointToRayHitTarget();
+				if(m_HitGameObj != null)
+				{
+					m_Player.SetActionTarget(m_HitGameObj);
+				}
+
 			}
 
 		}
@@ -105,9 +140,7 @@ namespace AGS.Player
 		// Fixed update is called in sync with physics
 		private void FixedUpdate()
 		{
-			if(mouseDown){
-				m_Player.Move (m_Move);
-			}
+
 
 			// pass all parameters to the character control script
 			/*if (m_Move != null) {

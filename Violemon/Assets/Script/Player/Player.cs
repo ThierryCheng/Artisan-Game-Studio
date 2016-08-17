@@ -19,6 +19,10 @@ namespace AGS.Player
 		float m_TurnAmount;
 		float m_ForwardAmount;
 		Vector3 m_GroundNormal;
+		Vector3 m_MoveDirection;
+		private Vector3 m_MoveTarget;
+		private GameObject m_ActionTarget;
+		private Animator m_Animator;
 		float m_CapsuleHeight;
 		Vector3 m_CapsuleCenter;
 		CapsuleCollider m_Capsule;
@@ -27,7 +31,7 @@ namespace AGS.Player
 		
 		void Start()
 		{
-			//m_Animator = GetComponent<Animator>();
+			m_Animator = GetComponent<Animator>();
 			m_Rigidbody = GetComponent<Rigidbody>();
 			m_Capsule = GetComponent<CapsuleCollider>();
 			m_CapsuleHeight = m_Capsule.height;
@@ -35,9 +39,79 @@ namespace AGS.Player
 			//m_text = GameObject.Find ("Text").GetComponent<Text>();
 			m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 		}
-		
-		
-		public void Move(Vector3 move)
+
+		public void SetMoveTarget(Vector3 target)
+		{
+			m_MoveTarget = target;
+			m_ActionTarget = null;
+	    }
+
+		public void SetActionTarget(GameObject target)
+		{
+			m_ActionTarget = target;
+			m_MoveTarget = target.transform.position;
+		}
+
+		public void Attack()
+		{
+			m_Animator.SetTrigger("NormalAttack");
+		}
+
+		private void FollowTarget()
+		{
+			if (m_MoveTarget != Vector3.zero) {
+				if(m_ActionTarget == null)
+				{
+				    if (Vector3.Distance (transform.position, m_MoveTarget) > 0.2f) {
+					    m_MoveDirection = m_MoveTarget - transform.position;
+					    m_MoveDirection = Vector3.Scale (m_MoveDirection, new Vector3 (1, 0, 1)).normalized;
+					    m_Animator.SetBool ("Run", true);
+					    Move (m_MoveDirection);
+				    } else {
+					    m_MoveTarget = Vector3.zero;
+					    m_Animator.SetBool ("Run", false);
+				    }
+				}
+				else
+				{
+					Vector3 forward = transform.TransformDirection(Vector3.forward);
+					Vector3 from = transform.TransformPoint (m_Rigidbody.centerOfMass);
+					RaycastHit hit;
+					if(!(Physics.SphereCast(from, 0.7f, forward, out hit, 1.5f - 0.7f) && hit.collider.gameObject == m_ActionTarget))
+					{
+						m_MoveDirection = m_MoveTarget - transform.position;
+						m_MoveDirection = Vector3.Scale (m_MoveDirection, new Vector3 (1, 0, 1)).normalized;
+						m_Animator.SetBool ("Run", true);
+						Move (m_MoveDirection);
+					}
+					else
+					{
+						m_MoveTarget = Vector3.zero;
+						m_ActionTarget = null;
+						m_Animator.SetTrigger("NormalAttack");
+					}
+				}
+			} else 
+			{
+				m_Animator.SetBool("Run", false);
+			}
+		}
+
+		private void Update()
+		{
+			Vector3 forward = transform.TransformDirection(Vector3.forward);
+			Vector3 from = transform.TransformPoint (m_Rigidbody.centerOfMass);
+			//Debug.DrawRay(from, forward, Color.red, 0.1f);
+			Debug.DrawLine (from, from + (forward.normalized * 2), Color.red, 0.1f);
+		}
+
+		private void FixedUpdate()
+		{
+
+			FollowTarget ();
+		}
+
+		private void Move(Vector3 move)
 		{
 			
 			// convert the world relative moveInput vector into a local-relative
