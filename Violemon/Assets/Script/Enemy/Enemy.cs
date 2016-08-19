@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+using System.Collections;
 
-namespace AGS.Player
+namespace AGS.Enemy
 {
 	[RequireComponent(typeof(Rigidbody))]
 	[RequireComponent(typeof(CapsuleCollider))]
 	[RequireComponent(typeof(Animator))]
-	public class Player : MonoBehaviour
+	public class Enemy : MonoBehaviour
 	{
 		[SerializeField] float m_MovingTurnSpeed = 360;
 		[SerializeField] float m_StationaryTurnSpeed = 180;
@@ -43,34 +43,35 @@ namespace AGS.Player
 			m_VectorMask = new Vector3 (1, 0, 1);
 			//m_text = GameObject.Find ("Text").GetComponent<Text>();
 			m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+			SetMoveTarget (new Vector3(1000, 0, 1000));
 		}
-
+		
 		public void SetMoveTarget(Vector3 target)
 		{
 			//Debug.Log ("m_blockMove: " + m_BlockMove);
 			m_MoveTarget = target;
 			m_ActionTarget = null;
-	    }
-
+		}
+		
 		public void SetActionTarget(GameObject target)
 		{
 			m_ActionTarget = target;
 			m_MoveTarget = Vector3.zero;
 		}
-
+		
 		private void FollowTarget()
 		{
 			//Debug.Log ("FollowTarget  m_blockMove: " + m_BlockMove);
 			if (m_MoveTarget != Vector3.zero) {
 				if (Vector3.Distance (transform.position, m_MoveTarget) > 0.2f) {
-				    m_MoveDirection = m_MoveTarget - transform.position;
+					m_MoveDirection = m_MoveTarget - transform.position;
 					m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
 					m_Animator.SetBool ("Run", true);
-				    Move (m_MoveDirection);
-			    } else {
-				    m_MoveTarget = Vector3.zero;
+					Move (m_MoveDirection);
+				} else {
+					m_MoveTarget = Vector3.zero;
 					m_Animator.SetBool ("Run", false);
-			    }
+				}
 			}
 			else if(m_ActionTarget != null)
 			{
@@ -97,7 +98,7 @@ namespace AGS.Player
 				m_Animator.SetBool("Run", false);
 			}
 		}
-
+		
 		private void Update()
 		{
 			//Vector3 forward = transform.TransformDirection(Vector3.forward);
@@ -105,7 +106,7 @@ namespace AGS.Player
 			//Debug.DrawRay(from, forward, Color.red, 0.1f);
 			//Debug.DrawLine (from, from + (forward.normalized * 2), Color.red, 0.1f);
 		}
-
+		
 		private void FixedUpdate()
 		{
 			if (!m_BlockMove) 
@@ -113,10 +114,10 @@ namespace AGS.Player
 				FollowTarget ();
 			}
 		}
-
+		
 		private void Move(Vector3 move)
 		{
-
+			
 			// convert the world relative moveInput vector into a local-relative
 			// turn amount and forward amount required to head in the desired
 			// direction.
@@ -196,13 +197,13 @@ namespace AGS.Player
 			v.y = m_Rigidbody.velocity.y;
 			m_Rigidbody.velocity = v;
 		}*/
-
+		
 		void ApplyMove(Vector3 move)
 		{
 			m_Rigidbody.MovePosition (transform.position + new Vector3 (move.x, 0, move.z) * Time.deltaTime * m_MoveSpeedMultiplier);
 			
 		}
-
+		
 		void ApplyExtraTurnRotation()
 		{
 			// help the character turn faster (this is in addition to root rotation in the animation)
@@ -244,22 +245,10 @@ namespace AGS.Player
 				//m_Animator.applyRootMotion = false;
 			}
 		}
-
+		
 		void ActionCallBack(string name)
 		{
-			if (name.Equals ("Attack_001") || name.Equals ("Attack_002") || name.Equals ("Attack_003")) 
-			{
-				if(m_MoveTarget != Vector3.zero || m_ActionTarget != m_ActionPerformedTarget)
-				{
-					m_Animator.SetTrigger("Interrupt");
-					m_BlockMove = false;
-					return;
-				}
-			}
-			if (name.Equals ("Attack_003")) 
-			{
-				m_BlockMove = false;
-			}
+			m_BlockMove = false;
 			//Debug.Log ("CallBack: " + name);
 		}
 	}
