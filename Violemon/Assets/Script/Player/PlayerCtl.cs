@@ -114,7 +114,7 @@ namespace AGS.Player
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit hitInfo;
 			if (Physics.Raycast (ray, out hitInfo, 100) && hitInfo.collider.tag == "Human") {
-				Debug.Log ("hit target human");
+				//Debug.Log ("hit target human");
 				m_HitGameObj = hitInfo.collider.gameObject;
 
 			}
