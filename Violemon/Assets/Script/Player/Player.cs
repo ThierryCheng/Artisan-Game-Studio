@@ -259,6 +259,12 @@ namespace AGS.Player
 			if (name.Equals ("Attack_003")) 
 			{
 				m_BlockMove = false;
+				if(m_MoveTarget != Vector3.zero || m_ActionTarget != null)
+				{
+					m_Animator.SetTrigger("Interrupt");
+					m_Animator.SetBool("Run", true);
+					return;
+				}
 			}
 			//Debug.Log ("CallBack: " + name);
 		}
