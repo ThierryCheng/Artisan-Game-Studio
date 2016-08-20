@@ -12,24 +12,24 @@ namespace AGS.Character
 		[SerializeField] float m_StationaryTurnSpeed = 180;
 		[SerializeField] float m_MoveSpeedMultiplier = 1f;
 		[SerializeField] float m_GroundCheckDistance = 0.3f;
+		[SerializeField] int   m_Health = 100;
 		
-		Rigidbody m_Rigidbody;
+		protected Rigidbody m_Rigidbody;
 		//Animator  m_Animator;
-		const float k_Half = 0.5f;
-		float m_TurnAmount;
-		float m_ForwardAmount;
-		Vector3 m_GroundNormal;
-		Vector3 m_MoveDirection;
+		protected float m_TurnAmount;
+		protected float m_ForwardAmount;
+		protected Vector3 m_GroundNormal;
+		protected Vector3 m_MoveDirection;
 		protected Vector3 m_VectorMask;
 		protected Vector3 m_MoveTarget;
 		protected GameObject m_ActionTarget;
 		protected GameObject m_ActionPerformedTarget;
 		protected Animator m_Animator;
 		protected bool m_BlockMove;
-		float m_CapsuleHeight;
-		Vector3 m_CapsuleCenter;
-		CapsuleCollider m_Capsule;
-		bool m_Crouching;
+		//float m_CapsuleHeight;
+		protected Vector3 m_CapsuleCenter;
+		protected CapsuleCollider m_Capsule;
+
 		//Text m_text;
 		
 		protected void Start()
@@ -37,7 +37,7 @@ namespace AGS.Character
 			m_Animator = GetComponent<Animator>();
 			m_Rigidbody = GetComponent<Rigidbody>();
 			m_Capsule = GetComponent<CapsuleCollider>();
-			m_CapsuleHeight = m_Capsule.height;
+			//m_CapsuleHeight = m_Capsule.height;
 			m_CapsuleCenter = m_Capsule.center;
 			m_BlockMove = false;
 			m_VectorMask = new Vector3 (1, 0, 1);
@@ -75,7 +75,8 @@ namespace AGS.Character
 			else if(m_ActionTarget != null)
 			{
 				Vector3 forward = transform.TransformDirection(Vector3.forward);
-				Vector3 from = transform.TransformPoint (m_Rigidbody.centerOfMass);
+				//Vector3 from = transform.TransformPoint (m_Rigidbody.centerOfMass);
+				Vector3 from = transform.TransformPoint (m_CapsuleCenter);
 				RaycastHit hit;
 				if(!(Physics.SphereCast(from, 0.7f, forward, out hit, 1.5f - 0.7f) && hit.collider.gameObject == m_ActionTarget))
 				{
