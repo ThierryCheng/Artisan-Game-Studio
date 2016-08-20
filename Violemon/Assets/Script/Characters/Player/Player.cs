@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using AGS.Character;
 
-namespace AGS.Player
+namespace AGS.Characters
 {
 	public class Player : BaseCharacter
 	{
@@ -19,7 +18,9 @@ namespace AGS.Player
 				}
 				if(m_ActionTarget != null)
 				{
-					m_ActionTarget.SendMessage("Attacked");
+					AttackItem item = new AttackItem();
+					item.m_HitPoint = 35;
+					m_ActionTarget.SendMessage("Attacked", item);
 				}
 			}
 			if (name.Equals ("Attack_003")) 
@@ -35,6 +36,5 @@ namespace AGS.Player
 			//Debug.Log ("CallBack: " + name);
 		}
 
-		public override void Attacked(Object para){}
 	}
 }

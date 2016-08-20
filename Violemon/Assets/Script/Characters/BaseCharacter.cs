@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace AGS.Character
+namespace AGS.Characters
 {
 	[RequireComponent(typeof(Rigidbody))]
 	[RequireComponent(typeof(CapsuleCollider))]
@@ -248,6 +248,9 @@ namespace AGS.Character
 		
 		protected void ActionCallBack (string name){}
 
-		public abstract void Attacked(Object para);
+		public void Attacked(AttackItem para)
+		{
+			Debug.Log (para.m_HitPoint);
+		}
 	}
 }
