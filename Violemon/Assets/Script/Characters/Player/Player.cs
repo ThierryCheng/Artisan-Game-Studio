@@ -18,11 +18,15 @@ namespace AGS.Characters
 				}
 				if(m_ActionTarget != null)
 				{
-					AttackItem item = new AttackItem();
-					item.HitPoint = 35;
-					item.SlowDown = 3.0f;
-					item.Stun = 4.0f;
-					m_ActionTarget.SendMessage("Attacked", item);
+					if(TargetInRange(m_CanBeAttacked))
+					{
+
+						AttackItem item = new AttackItem();
+						item.HitPoint = 35;
+						item.SlowDown = 3.0f;
+						item.Stun = 4.0f;
+						m_ActionTarget.SendMessage("Attacked", item);
+					}
 				}
 			}
 			if (name.Equals ("Attack_003")) 
@@ -37,6 +41,5 @@ namespace AGS.Characters
 			}
 			//Debug.Log ("CallBack: " + name);
 		}
-
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using AGS.Config;
 
 namespace AGS.Characters
 {
@@ -12,8 +13,6 @@ namespace AGS.Characters
 		private Vector3 m_Move;
 		private Vector3 m_TargetPosition;
 		private GameObject m_HitGameObj;
-		private int groundLayerIndex;
-		private int enemyLayerIndex;
 		private Animator m_Animator;
 		private void Start()
 		{
@@ -32,8 +31,6 @@ namespace AGS.Characters
 			// get the third person character ( this should never be null due to require component )
 			m_Animator       = GetComponent<Animator>();
 			m_Player         = GetComponent<Player>();
-			groundLayerIndex = LayerMask.GetMask ("GroundCollider");
-			enemyLayerIndex  = LayerMask.GetMask ("Human");
 		}
 		
 		
@@ -97,7 +94,7 @@ namespace AGS.Characters
 		{
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit hitInfo;
-			if (Physics.Raycast (ray, out hitInfo, 100, groundLayerIndex)) {
+			if (Physics.Raycast (ray, out hitInfo, 100, LayerManager.Instance().GetGroundLayerIndex())) {
 				//Debug.Log ("111");
 				m_TargetPosition = hitInfo.point;
 
@@ -114,7 +111,8 @@ namespace AGS.Characters
 		{
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit hitInfo;
-			if (Physics.SphereCast (ray, 0.3f, out hitInfo, 100f, enemyLayerIndex) && hitInfo.collider.tag == "Human") {
+			if (Physics.SphereCast (ray, 0.3f, out hitInfo, 100f, LayerManager.Instance().GetHumanLayerIndex()) 
+			    && hitInfo.collider.tag == "Human") {
 				//Debug.Log ("hit target human");
 				m_HitGameObj = hitInfo.collider.gameObject;
 

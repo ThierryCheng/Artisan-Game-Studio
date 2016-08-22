@@ -31,7 +31,9 @@ namespace AGS.Characters
 		protected Vector3         m_CapsuleCenter;
 		protected CapsuleCollider m_Capsule;
 		protected float           m_StunDuration;
-
+		protected float           m_AbleToAttack;
+		protected float           m_CanBeAttacked;
+		protected float           m_SphereRadius;
 		//Text m_text;
 		
 		protected void Start()
@@ -45,6 +47,9 @@ namespace AGS.Characters
 			m_VectorMask = new Vector3 (1, 0, 1);
 			//m_text = GameObject.Find ("Text").GetComponent<Text>();
 			m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+			m_AbleToAttack = 1.0f;
+			m_CanBeAttacked = 2.4f;
+			m_SphereRadius = 0.8f;
 		}
 		
 		public void SetMoveTarget(Vector3 target)
@@ -59,7 +64,36 @@ namespace AGS.Characters
 			m_ActionTarget = target;
 			m_MoveTarget = Vector3.zero;
 		}
-		
+
+		protected bool TargetInRange(float range)
+		{
+			Vector3 forward = transform.TransformDirection(Vector3.forward);
+			//Vector3 from = transform.TransformPoint (m_Rigidbody.centerOfMass);
+			Vector3 from = transform.TransformPoint (m_CapsuleCenter);
+			RaycastHit hit;
+
+			//Vector3 forward1 = transform.TransformDirection(Vector3.forward);
+			//Vector3 from1 = transform.TransformPoint (m_Rigidbody.centerOfMass);
+			//Debug.DrawRay(from, forward, Color.red, 0.1f);
+			//Debug.DrawLine (from, from + (forward.normalized * (range - m_SphereRadius)), Color.red, 0.1f);
+
+
+			if (Physics.SphereCast (from, 
+			                        m_SphereRadius, 
+			                        forward, 
+			                        out hit, 
+			                        range - m_SphereRadius, 
+			                        LayerManager.Instance().GetHumanLayerIndex()) 
+			    && hit.collider.gameObject == m_ActionTarget) 
+			{
+			    return true;
+		    }
+			else
+			{
+				return false;
+			}
+	    }
+
 		private void FollowTarget()
 		{
 			//Debug.Log ("FollowTarget  m_blockMove: " + m_BlockMove);
@@ -76,11 +110,7 @@ namespace AGS.Characters
 			}
 			else if(m_ActionTarget != null)
 			{
-				Vector3 forward = transform.TransformDirection(Vector3.forward);
-				//Vector3 from = transform.TransformPoint (m_Rigidbody.centerOfMass);
-				Vector3 from = transform.TransformPoint (m_CapsuleCenter);
-				RaycastHit hit;
-				if(!(Physics.SphereCast(from, 0.7f, forward, out hit, 1.5f - 0.7f) && hit.collider.gameObject == m_ActionTarget))
+				if(!TargetInRange(m_AbleToAttack))
 				{
 					m_MoveDirection = m_ActionTarget.transform.position - transform.position;
 					m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
@@ -246,7 +276,7 @@ namespace AGS.Characters
 			RaycastHit hitInfo;
 			#if UNITY_EDITOR
 			// helper to visualise the ground check ray in the scene view
-			Debug.DrawLine(transform.position + (Vector3.up * 0.1f), transform.position + (Vector3.up * 0.1f) + (Vector3.down * m_GroundCheckDistance));
+			//Debug.DrawLine(transform.position + (Vector3.up * 0.1f), transform.position + (Vector3.up * 0.1f) + (Vector3.down * m_GroundCheckDistance));
 			#endif
 			// 0.1f is a small offset to start the ray from inside the character
 			// it is also good to note that the transform position in the sample assets is at the base of the character
