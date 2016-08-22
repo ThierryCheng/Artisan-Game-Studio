@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using AGS.Config;
 
 namespace AGS.Characters
 {
@@ -14,21 +15,22 @@ namespace AGS.Characters
 		[SerializeField] float m_GroundCheckDistance = 0.3f;
 		[SerializeField] int   m_Health = 100;
 		
-		protected Rigidbody m_Rigidbody;
+		protected Rigidbody       m_Rigidbody;
 		//Animator  m_Animator;
-		protected float m_TurnAmount;
-		protected float m_ForwardAmount;
-		protected Vector3 m_GroundNormal;
-		protected Vector3 m_MoveDirection;
-		protected Vector3 m_VectorMask;
-		protected Vector3 m_MoveTarget;
-		protected GameObject m_ActionTarget;
-		protected GameObject m_ActionPerformedTarget;
-		protected Animator m_Animator;
-		protected bool m_BlockMove;
+		protected float           m_TurnAmount;
+		protected float           m_ForwardAmount;
+		protected Vector3         m_GroundNormal;
+		protected Vector3         m_MoveDirection;
+		protected Vector3         m_VectorMask;
+		protected Vector3         m_MoveTarget;
+		protected GameObject      m_ActionTarget;
+		protected GameObject      m_ActionPerformedTarget;
+		protected Animator        m_Animator;
+		protected bool            m_BlockMove;
 		//float m_CapsuleHeight;
-		protected Vector3 m_CapsuleCenter;
+		protected Vector3         m_CapsuleCenter;
 		protected CapsuleCollider m_Capsule;
+		protected float           m_StunDuration;
 
 		//Text m_text;
 		
@@ -101,12 +103,26 @@ namespace AGS.Characters
 		
 		private void Update()
 		{
+			DealWithStun ();
 			//Vector3 forward = transform.TransformDirection(Vector3.forward);
 			//Vector3 from = transform.TransformPoint (m_Rigidbody.centerOfMass);
 			//Debug.DrawRay(from, forward, Color.red, 0.1f);
 			//Debug.DrawLine (from, from + (forward.normalized * 2), Color.red, 0.1f);
 		}
-		
+
+		private void DealWithStun()
+		{
+			if (m_StunDuration > 0f) 
+			{
+				m_StunDuration -= Time.deltaTime;
+				if(m_StunDuration <= 0f)
+				{
+					m_BlockMove = false;
+					m_Animator.SetBool("Stun", false);
+				}
+			}
+	    }
+
 		private void FixedUpdate()
 		{
 			if (!m_BlockMove) 
@@ -250,7 +266,32 @@ namespace AGS.Characters
 
 		public void Attacked(AttackItem para)
 		{
-			Debug.Log (para.m_HitPoint);
+			//Debug.Log (para.m_HitPoint);
+			if (para.Stun > 0) 
+			{
+				//StartCoroutine(StartStun(para.Stun));
+				StartStun(para.Stun);
+			}
 		}
+
+		private void StartStun(float stun)
+		{
+			float m_MaxStun = GameConstants.MaxStunTime;
+			m_StunDuration = m_MaxStun * (stun/GameConstants.MaxStunPower);
+			m_Animator.SetBool ("Stun", true);
+			m_BlockMove = true;
+		}
+
+		/*private IEnumerator StartStun(int stun)
+		{
+			float m_MaxStun = 5.0f;
+			float m_StunTime = m_MaxStun * (stun/10);
+			m_Animator.SetBool ("Stun", true);
+			Debug.Log ("Stun Time: " + m_StunTime);
+			yield return new WaitForSeconds(m_StunTime);
+			Debug.Log ("Release from Stun");
+			m_Animator.SetBool ("Stun", false);
+		}*/
+
 	}
 }

@@ -19,7 +19,9 @@ namespace AGS.Characters
 				if(m_ActionTarget != null)
 				{
 					AttackItem item = new AttackItem();
-					item.m_HitPoint = 35;
+					item.HitPoint = 35;
+					item.SlowDown = 3.0f;
+					item.Stun = 4.0f;
 					m_ActionTarget.SendMessage("Attacked", item);
 				}
 			}

@@ -1,17 +1,31 @@
 ﻿using UnityEngine;
 using System.Collections;
+using AGS.Config;
 
 namespace AGS.Characters
 {
     public class AttackItem 
 	{
-
-		public int m_HitPoint;
-		public int m_Stun
+		private int m_HitPoint; 
+		private float m_Stun; 
+		private float m_KnockBack; 
+		private float m_SlowDown; 
+		public int HitPoint
 		{
 			set
 			{
-				if(value < 0 || value > 7)
+				m_HitPoint = value;
+			}
+			get
+			{
+				return m_HitPoint;
+			}
+		}
+		public float Stun
+		{
+			set
+			{
+				if(value < 0 || value > GameConstants.MaxStunPower)
 					throw new UnityException();
 				m_Stun = value;
 		    }
@@ -20,24 +34,24 @@ namespace AGS.Characters
 				return m_Stun;
 		    }
 		}
-		public int m_BlowBack
+		public float KnockBack
 		{
 			set
 			{
-				if(value < 0 || value > 7)
+				if(value < 0 || value > GameConstants.MaxKnockBackPower)
 					throw new UnityException();
-				m_BlowBack = value;
+				m_KnockBack = value;
 			}
 			get
 			{
-				return m_BlowBack;
+				return m_KnockBack;
 			}
 		}
-		public int m_SlowDown
+		public float SlowDown
 		{
 			set
 			{
-				if(value < 0 || value > 7)
+				if(value < 0 || value > GameConstants.MaxSlowDownPower)
 					throw new UnityException();
 				m_SlowDown = value;
 			}
