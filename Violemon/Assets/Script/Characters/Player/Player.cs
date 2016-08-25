@@ -6,6 +6,16 @@ namespace AGS.Characters
 	public class Player : BaseCharacter
 	{
 
+		protected void Start()
+		{
+			base.Start ();
+			//m_MoveTarget = new Vector3 (1000, 0, 1000);
+			gameObject.tag = "Player";
+			m_HitPoints = 100;
+			//gameObject.layer = "Human";
+			
+		}
+
 		protected void ActionCallBack(string name)
 		{
 			if (name.Equals ("Attack_001") || name.Equals ("Attack_002") || name.Equals ("Attack_003")) 
@@ -22,10 +32,18 @@ namespace AGS.Characters
 					{
 
 						AttackItem item = new AttackItem();
-						item.HitPoint = 35;
+						item.Damage = 40;
 						item.SlowDown = 3.0f;
 						item.Stun = 4.0f;
-						m_ActionTarget.SendMessage("Attacked", item);
+						BaseCharacter bc = m_ActionTarget.GetComponent<BaseCharacter>();
+						bc.Attacked(item);
+						if(bc.IsDead())
+						{
+							m_ActionTarget = null;
+							m_Animator.SetTrigger("StopAttacking");
+							m_BlockMove = false;
+							return;
+						}
 					}
 				}
 			}

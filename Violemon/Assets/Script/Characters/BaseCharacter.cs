@@ -23,7 +23,7 @@ namespace AGS.Characters
 		protected Vector3         m_MoveDirection;
 		protected Vector3         m_VectorMask;
 		protected Vector3         m_MoveTarget;
-		protected GameObject      m_ActionTarget;
+		public GameObject      m_ActionTarget;
 		protected GameObject      m_ActionPerformedTarget;
 		protected Animator        m_Animator;
 		protected bool            m_BlockMove;
@@ -34,6 +34,8 @@ namespace AGS.Characters
 		protected float           m_AbleToAttack;
 		protected float           m_CanBeAttacked;
 		protected float           m_SphereRadius;
+		protected int             m_HitPoints;
+		protected bool            m_IsDead;
 		//Text m_text;
 		
 		protected void Start()
@@ -50,6 +52,7 @@ namespace AGS.Characters
 			m_AbleToAttack = 1.0f;
 			m_CanBeAttacked = 2.4f;
 			m_SphereRadius = 0.8f;
+			m_IsDead = false;
 		}
 		
 		public void SetMoveTarget(Vector3 target)
@@ -65,18 +68,11 @@ namespace AGS.Characters
 			m_MoveTarget = Vector3.zero;
 		}
 
-		protected bool TargetInRange(float range)
+		/*protected bool TargetInRange(float range)
 		{
 			Vector3 forward = transform.TransformDirection(Vector3.forward);
-			//Vector3 from = transform.TransformPoint (m_Rigidbody.centerOfMass);
 			Vector3 from = transform.TransformPoint (m_CapsuleCenter);
 			RaycastHit hit;
-
-			//Vector3 forward1 = transform.TransformDirection(Vector3.forward);
-			//Vector3 from1 = transform.TransformPoint (m_Rigidbody.centerOfMass);
-			//Debug.DrawRay(from, forward, Color.red, 0.1f);
-			//Debug.DrawLine (from, from + (forward.normalized * (range - m_SphereRadius)), Color.red, 0.1f);
-
 
 			if (Physics.SphereCast (from, 
 			                        m_SphereRadius, 
@@ -92,7 +88,27 @@ namespace AGS.Characters
 			{
 				return false;
 			}
-	    }
+	    }*/
+
+		protected bool TargetInRange(float range)
+		{
+			Vector3 forward = transform.TransformDirection(Vector3.forward);
+			Vector3 from = transform.TransformPoint (m_CapsuleCenter);
+			RaycastHit hit;
+
+			RaycastHit[] infos = Physics.SphereCastAll(from, 
+			                                           m_SphereRadius, 
+			                                           forward, 
+			                                           range - m_SphereRadius);
+			foreach(RaycastHit info in infos)
+			{
+				if(info.collider.gameObject == m_ActionTarget)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 
 		private void FollowTarget()
 		{
@@ -155,6 +171,7 @@ namespace AGS.Characters
 
 		private void FixedUpdate()
 		{
+
 			if (!m_BlockMove) 
 			{
 				FollowTarget ();
@@ -297,11 +314,27 @@ namespace AGS.Characters
 		public void Attacked(AttackItem para)
 		{
 			//Debug.Log (para.m_HitPoint);
+			m_HitPoints -= para.Damage;
+			if (m_HitPoints <= 0) 
+			{
+				Debug.Log("DIe");
+				m_Animator.SetTrigger ("Die");
+				m_BlockMove = true;
+				m_IsDead = true;
+				//this.gameObject.SetActive(false);
+				return;
+			}
 			if (para.Stun > 0) 
 			{
 				//StartCoroutine(StartStun(para.Stun));
 				StartStun(para.Stun);
 			}
+		}
+
+		public bool IsDead()
+		{
+			Debug.Log ("Is dead: " + m_IsDead);
+			return m_IsDead;
 		}
 
 		private void StartStun(float stun)
@@ -312,6 +345,10 @@ namespace AGS.Characters
 			m_BlockMove = true;
 		}
 
+		public bool IsCurrentStateName(string name)
+		{
+			return m_Animator.GetCurrentAnimatorStateInfo (0).IsName (name);
+		}
 		/*private IEnumerator StartStun(int stun)
 		{
 			float m_MaxStun = 5.0f;

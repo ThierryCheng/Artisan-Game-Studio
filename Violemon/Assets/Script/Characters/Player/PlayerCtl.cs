@@ -73,6 +73,7 @@ namespace AGS.Characters
 				//    m_Animator.SetBool("Run", true);
 				//}
 				GetMouseScreenPointToRayHitPosition();
+				m_HitGameObj = null;
 				m_Player.SetMoveTarget(m_TargetPosition);
 			}
 
@@ -114,8 +115,12 @@ namespace AGS.Characters
 			if (Physics.SphereCast (ray, 0.3f, out hitInfo, 100f, LayerManager.Instance().GetHumanLayerIndex()) 
 			    && hitInfo.collider.tag == "Human") {
 				//Debug.Log ("hit target human");
-				m_HitGameObj = hitInfo.collider.gameObject;
+				BaseCharacter bc = hitInfo.collider.gameObject.GetComponent<BaseCharacter>();
 
+				if(!bc.IsDead())
+				{
+					m_HitGameObj = hitInfo.collider.gameObject;
+				}
 			}
 			else
 			{

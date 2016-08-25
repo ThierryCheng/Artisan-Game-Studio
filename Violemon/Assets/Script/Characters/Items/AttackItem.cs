@@ -6,19 +6,19 @@ namespace AGS.Characters
 {
     public class AttackItem 
 	{
-		private int m_HitPoint; 
+		private int m_Damage; 
 		private float m_Stun; 
 		private float m_KnockBack; 
 		private float m_SlowDown; 
-		public int HitPoint
+		public int Damage
 		{
 			set
 			{
-				m_HitPoint = value;
+				m_Damage = value;
 			}
 			get
 			{
-				return m_HitPoint;
+				return m_Damage;
 			}
 		}
 		public float Stun
