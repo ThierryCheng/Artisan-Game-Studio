@@ -23,7 +23,6 @@ namespace AGS.Characters
 				if(m_MoveTarget != Vector3.zero || m_ActionTarget != m_ActionPerformedTarget)
 				{
 					m_Animator.SetTrigger("Interrupt");
-					m_BlockMove = false;
 					return;
 				}
 				if(m_ActionTarget != null)
@@ -41,7 +40,6 @@ namespace AGS.Characters
 						{
 							m_ActionTarget = null;
 							m_Animator.SetTrigger("StopAttacking");
-							m_BlockMove = false;
 							return;
 						}
 					}
@@ -49,7 +47,6 @@ namespace AGS.Characters
 			}
 			if (name.Equals ("Attack_003")) 
 			{
-				m_BlockMove = false;
 				if(m_MoveTarget != Vector3.zero || m_ActionTarget != null)
 				{
 					m_Animator.SetTrigger("Interrupt");

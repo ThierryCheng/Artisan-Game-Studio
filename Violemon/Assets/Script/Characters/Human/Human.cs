@@ -17,7 +17,6 @@ namespace AGS.Characters
 
 		protected void ActionCallBack(string name)
 		{
-			m_BlockMove = false;
 			if(TargetInRange(m_CanBeAttacked))
 			{
 				
@@ -30,7 +29,6 @@ namespace AGS.Characters
 				if(bc.IsDead())
 				{
 					m_ActionTarget = null;
-					m_BlockMove = false;
 					return;
 				}
 			}

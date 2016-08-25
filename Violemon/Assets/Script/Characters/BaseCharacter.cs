@@ -68,28 +68,6 @@ namespace AGS.Characters
 			m_MoveTarget = Vector3.zero;
 		}
 
-		/*protected bool TargetInRange(float range)
-		{
-			Vector3 forward = transform.TransformDirection(Vector3.forward);
-			Vector3 from = transform.TransformPoint (m_CapsuleCenter);
-			RaycastHit hit;
-
-			if (Physics.SphereCast (from, 
-			                        m_SphereRadius, 
-			                        forward, 
-			                        out hit, 
-			                        range - m_SphereRadius, 
-			                        LayerManager.Instance().GetHumanLayerIndex()) 
-			    && hit.collider.gameObject == m_ActionTarget) 
-			{
-			    return true;
-		    }
-			else
-			{
-				return false;
-			}
-	    }*/
-
 		protected bool TargetInRange(float range)
 		{
 			Vector3 forward = transform.TransformDirection(Vector3.forward);
@@ -118,7 +96,7 @@ namespace AGS.Characters
 					m_MoveDirection = m_MoveTarget - transform.position;
 					m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
 					m_Animator.SetBool ("Run", true);
-					Move (m_MoveDirection);
+
 				} else {
 					m_MoveTarget = Vector3.zero;
 					m_Animator.SetBool ("Run", false);
@@ -131,14 +109,14 @@ namespace AGS.Characters
 					m_MoveDirection = m_ActionTarget.transform.position - transform.position;
 					m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
 					m_Animator.SetBool ("Run", true);
-					Move (m_MoveDirection);
+
 				}
 				else
 				{
 					m_Animator.SetTrigger("NormalAttack");
 					m_Animator.SetBool ("Run", false);
 					m_ActionPerformedTarget = m_ActionTarget;
-					m_BlockMove = true;
+
 				}
 			}
 			else 
@@ -163,24 +141,29 @@ namespace AGS.Characters
 				m_StunDuration -= Time.deltaTime;
 				if(m_StunDuration <= 0f)
 				{
-					m_BlockMove = false;
+
 					m_Animator.SetBool("Stun", false);
 				}
 			}
 	    }
 
+		void OnAnimatorMove()
+		{
+			if(m_Animator.GetBool("Run") == true && !IsDead())
+			{
+				Move (m_MoveDirection);
+			}
+	    }
+
 		private void FixedUpdate()
 		{
-
-			if (!m_BlockMove) 
-			{
-				FollowTarget ();
-			}
+			FollowTarget ();
 		}
 		
 		private void Move(Vector3 move)
 		{
-			
+			if (move == Vector3.zero)
+				return;
 			// convert the world relative moveInput vector into a local-relative
 			// turn amount and forward amount required to head in the desired
 			// direction.
@@ -319,7 +302,7 @@ namespace AGS.Characters
 			{
 				Debug.Log("DIe");
 				m_Animator.SetTrigger ("Die");
-				m_BlockMove = true;
+
 				m_IsDead = true;
 				//this.gameObject.SetActive(false);
 				return;
@@ -333,7 +316,6 @@ namespace AGS.Characters
 
 		public bool IsDead()
 		{
-			Debug.Log ("Is dead: " + m_IsDead);
 			return m_IsDead;
 		}
 
@@ -342,7 +324,6 @@ namespace AGS.Characters
 			float m_MaxStun = GameConstants.MaxStunTime;
 			m_StunDuration = m_MaxStun * (stun/GameConstants.MaxStunPower);
 			m_Animator.SetBool ("Stun", true);
-			m_BlockMove = true;
 		}
 
 		public bool IsCurrentStateName(string name)
