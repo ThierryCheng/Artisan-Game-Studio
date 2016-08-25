@@ -20,11 +20,7 @@ namespace AGS.Characters
 		{
 			if (name.Equals ("Attack_001") || name.Equals ("Attack_002") || name.Equals ("Attack_003")) 
 			{
-				if(m_MoveTarget != Vector3.zero || m_ActionTarget != m_ActionPerformedTarget)
-				{
-					m_Animator.SetTrigger("Interrupt");
-					return;
-				}
+
 				if(m_ActionTarget != null)
 				{
 					if(TargetInRange(m_CanBeAttacked))
@@ -39,21 +35,14 @@ namespace AGS.Characters
 						if(bc.IsDead())
 						{
 							m_ActionTarget = null;
-							m_Animator.SetTrigger("StopAttacking");
-							return;
+
 						}
 					}
 				}
+
 			}
-			if (name.Equals ("Attack_003")) 
-			{
-				if(m_MoveTarget != Vector3.zero || m_ActionTarget != null)
-				{
-					m_Animator.SetTrigger("Interrupt");
-					m_Animator.SetBool("Run", true);
-					return;
-				}
-			}
+
+
 			//Debug.Log ("CallBack: " + name);
 		}
 	}

@@ -23,7 +23,7 @@ namespace AGS.Characters
 		protected Vector3         m_MoveDirection;
 		protected Vector3         m_VectorMask;
 		protected Vector3         m_MoveTarget;
-		public GameObject      m_ActionTarget;
+		public    GameObject      m_ActionTarget;
 		protected GameObject      m_ActionPerformedTarget;
 		protected Animator        m_Animator;
 		protected bool            m_BlockMove;
@@ -36,6 +36,7 @@ namespace AGS.Characters
 		protected float           m_SphereRadius;
 		protected int             m_HitPoints;
 		protected bool            m_IsDead;
+
 		//Text m_text;
 		
 		protected void Start()
@@ -54,7 +55,12 @@ namespace AGS.Characters
 			m_SphereRadius = 0.8f;
 			m_IsDead = false;
 		}
-		
+
+		public void BlockMove(bool block)
+		{
+			m_BlockMove = block;
+		}
+
 		public void SetMoveTarget(Vector3 target)
 		{
 			//Debug.Log ("m_blockMove: " + m_BlockMove);
@@ -92,6 +98,7 @@ namespace AGS.Characters
 		{
 			//Debug.Log ("FollowTarget  m_blockMove: " + m_BlockMove);
 			if (m_MoveTarget != Vector3.zero) {
+				m_Animator.SetBool("HasTarget", false);
 				if (Vector3.Distance (transform.position, m_MoveTarget) > 0.2f) {
 					m_MoveDirection = m_MoveTarget - transform.position;
 					m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
@@ -104,23 +111,35 @@ namespace AGS.Characters
 			}
 			else if(m_ActionTarget != null)
 			{
-				if(!TargetInRange(m_AbleToAttack))
+				if(m_ActionTarget.gameObject.GetComponent<BaseCharacter>().IsDead())
 				{
-					m_MoveDirection = m_ActionTarget.transform.position - transform.position;
-					m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
-					m_Animator.SetBool ("Run", true);
-
+					m_ActionTarget = null;
+					m_Animator.SetBool("HasTarget", false);
 				}
 				else
 				{
-					m_Animator.SetTrigger("NormalAttack");
-					m_Animator.SetBool ("Run", false);
-					m_ActionPerformedTarget = m_ActionTarget;
-
+					m_Animator.SetBool("HasTarget", true);
+					if(!TargetInRange(m_AbleToAttack))
+					{
+						m_MoveDirection = m_ActionTarget.transform.position - transform.position;
+						m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
+						m_Animator.SetBool ("Run", true);
+						m_Animator.SetBool("NormalAttack", false);
+					}
+					else
+					{
+						//Debug.Log("Apply NormalAttack" + m_ActionTarget);
+						//m_BlockMove = true;
+						m_Animator.SetBool("NormalAttack", true);
+						m_Animator.SetBool ("Run", false);
+						m_ActionPerformedTarget = m_ActionTarget;
+						
+					}
 				}
 			}
 			else 
 			{
+				m_Animator.SetBool("HasTarget", false);
 				m_Animator.SetBool("Run", false);
 			}
 		}
@@ -149,7 +168,7 @@ namespace AGS.Characters
 
 		void OnAnimatorMove()
 		{
-			if(m_Animator.GetBool("Run") == true && !IsDead())
+			if(m_Animator.GetBool("Run") == true && !IsDead() && !m_BlockMove)
 			{
 				Move (m_MoveDirection);
 			}
