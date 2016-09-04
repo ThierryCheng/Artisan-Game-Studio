@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using AGS.Config;
 
 namespace AGS.Characters
 {
@@ -11,34 +12,35 @@ namespace AGS.Characters
 			base.Start ();
 			//m_MoveTarget = new Vector3 (1000, 0, 1000);
 			gameObject.tag = "Player";
-			m_HitPoints = 100;
+			m_HitPoints = 400;
 			//gameObject.layer = "Human";
 			
 		}
 
 		protected void ActionCallBack(string name)
 		{
-			if (name.Equals ("Attack_001") || name.Equals ("Attack_002") || name.Equals ("Attack_003")) 
+			Debug.Log(name + "  111111");
+			if (name.Equals ("Attack 001") || name.Equals ("Attack 002") || name.Equals ("Attack 003")) 
 			{
-
-				if(m_ActionTarget != null)
+				if(TargetInRange(m_CanBeAttacked, m_ActionPerformedTarget))
 				{
-					if(TargetInRange(m_CanBeAttacked))
+					Debug.Log(name + "  111111");
+					AttackItem item = GameConstants.GetAttackItem("Violemon_" + name);
+					if(item != null)
 					{
-
-						AttackItem item = new AttackItem();
-						item.Damage = 40;
-						item.SlowDown = 3.0f;
-						item.Stun = 4.0f;
-						BaseCharacter bc = m_ActionTarget.GetComponent<BaseCharacter>();
+						item.KnockBackDirection = transform.TransformDirection(Vector3.forward);
+						BaseCharacter bc = m_ActionPerformedTarget.GetComponent<BaseCharacter>();
 						bc.Attacked(item);
-						if(bc.IsDead())
+						if(m_ActionPerformedTarget == m_ActionTarget && bc.IsDead())
 						{
 							m_ActionTarget = null;
-
+							
 						}
 					}
 				}
+
+					
+
 
 			}
 

@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using AGS.Config;
 
-namespace AGS.Characters
+namespace AGS.Config
 {
     public class AttackItem 
 	{
@@ -10,6 +9,29 @@ namespace AGS.Characters
 		private float m_Stun; 
 		private float m_KnockBack; 
 		private float m_SlowDown; 
+		private Vector3 m_KnockBackDirection = Vector3.zero;
+
+		public AttackItem(int Damage, float Stun, float KnockBack, float SlowDown)
+		{
+			this.Damage = Damage;
+			this.Stun = Stun;
+			this.KnockBack = KnockBack;
+			this.SlowDown = SlowDown;
+			this.KnockBackDirection = KnockBackDirection;
+		}
+
+
+		public Vector3 KnockBackDirection
+		{
+			set
+			{
+				m_KnockBackDirection = value;
+			}
+			get
+			{
+				return m_KnockBackDirection;
+			}
+		}
 		public int Damage
 		{
 			set

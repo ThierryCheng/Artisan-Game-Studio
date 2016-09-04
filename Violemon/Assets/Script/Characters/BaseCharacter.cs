@@ -31,6 +31,8 @@ namespace AGS.Characters
 		protected Vector3         m_CapsuleCenter;
 		protected CapsuleCollider m_Capsule;
 		protected float           m_StunDuration;
+		protected float           m_KnockBackSpeed;
+		protected Vector3         m_KnockBackDirection;
 		protected float           m_AbleToAttack;
 		protected float           m_CanBeAttacked;
 		protected float           m_SphereRadius;
@@ -63,7 +65,6 @@ namespace AGS.Characters
 
 		public void SetMoveTarget(Vector3 target)
 		{
-			//Debug.Log ("m_blockMove: " + m_BlockMove);
 			m_MoveTarget = target;
 			m_ActionTarget = null;
 		}
@@ -74,7 +75,7 @@ namespace AGS.Characters
 			m_MoveTarget = Vector3.zero;
 		}
 
-		protected bool TargetInRange(float range)
+		protected bool TargetInRange(float range, GameObject target)
 		{
 			Vector3 forward = transform.TransformDirection(Vector3.forward);
 			Vector3 from = transform.TransformPoint (m_CapsuleCenter);
@@ -86,7 +87,7 @@ namespace AGS.Characters
 			                                           range - m_SphereRadius);
 			foreach(RaycastHit info in infos)
 			{
-				if(info.collider.gameObject == m_ActionTarget)
+				if(info.collider.gameObject == target)
 				{
 					return true;
 				}
@@ -96,7 +97,6 @@ namespace AGS.Characters
 
 		private void FollowTarget()
 		{
-			//Debug.Log ("FollowTarget  m_blockMove: " + m_BlockMove);
 			if (m_MoveTarget != Vector3.zero) {
 				m_Animator.SetBool("HasTarget", false);
 				if (Vector3.Distance (transform.position, m_MoveTarget) > 0.2f) {
@@ -119,7 +119,7 @@ namespace AGS.Characters
 				else
 				{
 					m_Animator.SetBool("HasTarget", true);
-					if(!TargetInRange(m_AbleToAttack))
+					if(!TargetInRange(m_AbleToAttack, m_ActionTarget))
 					{
 						m_MoveDirection = m_ActionTarget.transform.position - transform.position;
 						m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
@@ -128,8 +128,6 @@ namespace AGS.Characters
 					}
 					else
 					{
-						//Debug.Log("Apply NormalAttack" + m_ActionTarget);
-						//m_BlockMove = true;
 						m_Animator.SetBool("NormalAttack", true);
 						m_Animator.SetBool ("Run", false);
 						m_ActionPerformedTarget = m_ActionTarget;
@@ -160,7 +158,7 @@ namespace AGS.Characters
 				m_StunDuration -= Time.deltaTime;
 				if(m_StunDuration <= 0f)
 				{
-
+					m_BlockMove = false;
 					m_Animator.SetBool("Stun", false);
 				}
 			}
@@ -176,6 +174,13 @@ namespace AGS.Characters
 
 		private void FixedUpdate()
 		{
+			if (m_KnockBackSpeed > 0 && m_KnockBackDirection != Vector3.zero) 
+			{
+				m_KnockBackDirection.Normalize();
+				Vector3 moveAmount = (m_KnockBackSpeed * m_KnockBackDirection) * Time.deltaTime;
+				m_KnockBackSpeed -= GameConstants.KnockBackSpeedDecreaseRate;
+				m_Rigidbody.MovePosition (m_Rigidbody.position + moveAmount);
+			}
 			FollowTarget ();
 		}
 		
@@ -265,7 +270,10 @@ namespace AGS.Characters
 		
 		void ApplyMove(Vector3 move)
 		{
-			m_Rigidbody.MovePosition (transform.position + new Vector3 (move.x, 0, move.z) * Time.deltaTime * m_MoveSpeedMultiplier);
+			move = new Vector3 (move.x, 0, move.z);
+			Vector3 moveAmount = Vector3.zero;
+			moveAmount = move * Time.deltaTime * m_MoveSpeedMultiplier;
+			m_Rigidbody.MovePosition (m_Rigidbody.position + moveAmount);
 			
 		}
 		
@@ -331,6 +339,10 @@ namespace AGS.Characters
 				//StartCoroutine(StartStun(para.Stun));
 				StartStun(para.Stun);
 			}
+			else if(para.KnockBack > 0 && para.KnockBackDirection != Vector3.zero)
+			{
+				StartKnockBack(para.KnockBack, para.KnockBackDirection);
+			}
 		}
 
 		public bool IsDead()
@@ -340,9 +352,19 @@ namespace AGS.Characters
 
 		private void StartStun(float stun)
 		{
+			Debug.Log ("Start Stun");
 			float m_MaxStun = GameConstants.MaxStunTime;
 			m_StunDuration = m_MaxStun * (stun/GameConstants.MaxStunPower);
 			m_Animator.SetBool ("Stun", true);
+			m_BlockMove = true;
+		}
+
+		private void StartKnockBack(float knockBack, Vector3 dir)
+		{
+			Debug.Log ("Start knockBack");
+			float m_MaxKnockBackSpeed = GameConstants.MaxKnockBackSpeed;
+			m_KnockBackSpeed = m_MaxKnockBackSpeed * (knockBack/GameConstants.MaxKnockBackPower);
+			m_KnockBackDirection = dir;
 		}
 
 		public bool IsCurrentStateName(string name)

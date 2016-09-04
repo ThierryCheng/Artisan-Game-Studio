@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using AGS.Config;
 
 namespace AGS.Characters
 {
@@ -10,29 +11,30 @@ namespace AGS.Characters
 			base.Start ();
 			//m_MoveTarget = new Vector3 (1000, 0, 1000);
 			gameObject.tag = "Human";
-			m_HitPoints = 100;
+			m_HitPoints = 200;
 			//gameObject.layer = "Human";
 
 		}
 
 		protected void ActionCallBack(string name)
 		{
-			if(TargetInRange(m_CanBeAttacked))
+			if(TargetInRange(m_CanBeAttacked, m_ActionPerformedTarget))
 			{
 				
-				AttackItem item = new AttackItem();
-				item.Damage = 40;
-				item.SlowDown = 3.0f;
-				item.Stun = 4.0f;
-				BaseCharacter bc = m_ActionTarget.GetComponent<BaseCharacter>();
-				bc.Attacked(item);
-				if(bc.IsDead())
+
+				AttackItem item = GameConstants.GetAttackItem("HumanKnight_" + name);
+				if(item != null)
 				{
-					m_ActionTarget = null;
-					return;
+					item.KnockBackDirection = transform.TransformDirection(Vector3.forward);
+					BaseCharacter bc = m_ActionPerformedTarget.GetComponent<BaseCharacter>();
+					bc.Attacked(item);
+					if(m_ActionPerformedTarget == m_ActionTarget && bc.IsDead())
+					{
+						m_ActionTarget = null;
+						
+					}
 				}
 			}
-			//m_Animator.SetBool ("Run", true);
 		}
 	}
 }
