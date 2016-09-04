@@ -9,11 +9,10 @@ namespace AGS.Characters
 	[RequireComponent(typeof(Animator))]
 	public abstract class BaseCharacter : MonoBehaviour
 	{
-		[SerializeField] float m_MovingTurnSpeed = 360;
-		[SerializeField] float m_StationaryTurnSpeed = 180;
-		[SerializeField] float m_MoveSpeedMultiplier = 1f;
-		[SerializeField] float m_GroundCheckDistance = 0.3f;
-		[SerializeField] int   m_Health = 100;
+		protected float m_MovingTurnSpeed = 360;
+		protected float m_StationaryTurnSpeed = 180;
+		protected float m_GroundCheckDistance = 0.3f;
+
 		
 		protected Rigidbody       m_Rigidbody;
 		//Animator  m_Animator;
@@ -36,8 +35,23 @@ namespace AGS.Characters
 		protected float           m_AbleToAttack;
 		protected float           m_CanBeAttacked;
 		protected float           m_SphereRadius;
-		protected int             m_HitPoints;
 		protected bool            m_IsDead;
+
+		public    int             m_GrowthPoint;
+		public    int             m_MaxFeededPoint;
+		public    int             m_FeededPoint;
+		public    int             m_MaxHealth;
+		public    int             m_Health;
+		public    int             m_MaxStamina;
+		public    int             m_Stamina;
+		public    int             m_BasicPower;
+		public    int             m_BasicAttackDistance;
+		public    int             m_BasicAttackSpeed;
+		public    int             m_MoveSpeed;
+		public    int             m_HatredToHuman;
+		public    int             m_Buff;
+		public    int             m_FarmiliarityToHumanLanguage;
+		public    int             m_Deviation;
 
 		//Text m_text;
 		
@@ -272,7 +286,7 @@ namespace AGS.Characters
 		{
 			move = new Vector3 (move.x, 0, move.z);
 			Vector3 moveAmount = Vector3.zero;
-			moveAmount = move * Time.deltaTime * m_MoveSpeedMultiplier;
+			moveAmount = move * Time.deltaTime * m_MoveSpeed;
 			m_Rigidbody.MovePosition (m_Rigidbody.position + moveAmount);
 			
 		}
@@ -324,8 +338,8 @@ namespace AGS.Characters
 		public void Attacked(AttackItem para)
 		{
 			//Debug.Log (para.m_HitPoint);
-			m_HitPoints -= para.Damage;
-			if (m_HitPoints <= 0) 
+			m_Health -= para.Damage;
+			if (m_Health <= 0) 
 			{
 				Debug.Log("DIe");
 				m_Animator.SetTrigger ("Die");
