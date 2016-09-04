@@ -12,7 +12,7 @@ namespace AGS.Characters
 			base.Start ();
 			//m_MoveTarget = new Vector3 (1000, 0, 1000);
 			gameObject.tag = "Player";
-			m_HitPoints = 400;
+			//m_HitPoints = 400;
 			//gameObject.layer = "Human";
 			
 		}

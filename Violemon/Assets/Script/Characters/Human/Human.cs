@@ -11,7 +11,7 @@ namespace AGS.Characters
 			base.Start ();
 			//m_MoveTarget = new Vector3 (1000, 0, 1000);
 			gameObject.tag = "Human";
-			m_HitPoints = 200;
+			//m_HitPoints = 200;
 			//gameObject.layer = "Human";
 
 		}
