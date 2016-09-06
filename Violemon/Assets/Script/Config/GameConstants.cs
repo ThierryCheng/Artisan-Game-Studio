@@ -10,6 +10,10 @@ namespace AGS.Config
 		public static float MaxKnockBackPower = 10.0f;
 		public static float MaxSlowDownPercentage = 0.5f;
 		public static float MaxSlowDownPower = 10.0f;
+		public static float Violemon_FeededPointDecreaseRate = 0.001f;
+		public static float Violemon_InitialMaxFeededPoint = 100f;
+		public static float Violemon_InitialMaxHealth = 200f;
+		public static float Violemon_InitialMaxStamina = 100f;
 		private static AttackItem Violemon_Attack_001 = new AttackItem (20, 0f, 0f, 0f);
 		private static AttackItem Violemon_Attack_002 = new AttackItem (25, 0f, 0f, 0f);
 		private static AttackItem Violemon_Attack_003 = new AttackItem (30, 0f, 7f, 0f);

@@ -38,22 +38,17 @@ namespace AGS.Characters
 		protected float           m_CanBeAttacked;
 		protected float           m_SphereRadius;
 		protected bool            m_IsDead;
+		protected float           m_LastSecond;
 
-		public    int             m_GrowthPoint;
-		public    int             m_MaxFeededPoint;
-		public    int             m_FeededPoint;
-		public    int             m_MaxHealth;
-		public    int             m_Health;
-		public    int             m_MaxStamina;
-		public    int             m_Stamina;
-		public    int             m_BasicPower;
-		public    int             m_BasicAttackDistance;
-		public    int             m_BasicAttackSpeed;
-		public    int             m_MoveSpeed;
-		public    int             m_HatredToHuman;
+		public    float           m_MaxHealth;
+		public    float           m_Health;
+		public    float           m_MaxStamina;
+		public    float           m_Stamina;
+		public    float           m_BasicPower;
+		public    float           m_BasicAttackDistance;
+		public    float           m_BasicAttackSpeed;
+		public    float           m_MoveSpeed;
 		public    int             m_Buff;
-		public    int             m_FarmiliarityToHumanLanguage;
-		public    int             m_Deviation;
 
 		//血条显示
 		public    Canvas          m_HealthCanvas;
@@ -76,6 +71,7 @@ namespace AGS.Characters
 			m_CanBeAttacked = 2.4f;
 			m_SphereRadius = 0.8f;
 			m_IsDead = false;
+			m_LastSecond = Time.time;
 		}
 
 		public void BlockMove(bool block)
@@ -160,10 +156,19 @@ namespace AGS.Characters
 				m_Animator.SetBool("HasTarget", false);
 				m_Animator.SetBool("Run", false);
 			}
+
+			if(m_Animator.GetBool("Run") == true && !IsDead() && !m_BlockMove)
+			{
+				Move (m_MoveDirection);
+			}
 		}
-		
+
+		public void AddAttributeListener(BaseAttributeListener listener)
+		{}
+
 		private void Update()
 		{
+			PerSecondUpdate ();
 			DealWithStun ();
 			//Vector3 forward = transform.TransformDirection(Vector3.forward);
 			//Vector3 from = transform.TransformPoint (m_Rigidbody.centerOfMass);
@@ -184,15 +189,40 @@ namespace AGS.Characters
 			}
 	    }
 
-		void OnAnimatorMove()
+		/*void OnAnimatorMove()
 		{
 			if(m_Animator.GetBool("Run") == true && !IsDead() && !m_BlockMove)
 			{
 				Move (m_MoveDirection);
 			}
-	    }
+	    }*/
 
 		private void FixedUpdate()
+		{
+			CalculateKnockBack ();
+			FollowTarget ();
+		}
+
+		private void PerSecondUpdate()
+		{
+			if( (Time.time - m_LastSecond) >= 1f)
+			{
+				UpdateBaseAttributes();
+				UpdateSubAttributes();
+				m_LastSecond = Time.time;
+			}
+		}
+
+		protected void UpdateBaseAttributes()
+		{
+			UpdateStamina ();
+		}
+
+		protected abstract void UpdateSubAttributes ();
+
+		protected virtual void UpdateStamina(){}
+
+		private void CalculateKnockBack()
 		{
 			if (m_KnockBackSpeed > 0 && m_KnockBackDirection != Vector3.zero) 
 			{
@@ -201,10 +231,9 @@ namespace AGS.Characters
 				m_KnockBackSpeed -= GameConstants.KnockBackSpeedDecreaseRate;
 				m_Rigidbody.MovePosition (m_Rigidbody.position + moveAmount);
 			}
-			FollowTarget ();
 		}
 		
-		private void Move(Vector3 move)
+		protected void Move(Vector3 move)
 		{
 			if (move == Vector3.zero)
 				return;
@@ -339,7 +368,7 @@ namespace AGS.Characters
 			}
 		}
 		
-		protected void ActionCallBack (string name){}
+		protected abstract void ActionCallBack (string name);
 
 		public void Attacked(AttackItem para)
 		{

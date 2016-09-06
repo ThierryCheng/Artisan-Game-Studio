@@ -4,7 +4,7 @@ using AGS.Config;
 
 namespace AGS.Characters
 {
-	public class Human : BaseCharacter
+	public class Human : NPC
 	{
 		protected  new void Start()
 		{
@@ -16,7 +16,12 @@ namespace AGS.Characters
 
 		}
 
-		protected new void ActionCallBack(string name)
+		protected override void UpdateSubAttributes()
+		{
+				//Debug.Log ("Called in Player");
+		}
+
+		protected override void ActionCallBack(string name)
 		{
 			if(TargetInRange(m_CanBeAttacked, m_ActionPerformedTarget))
 			{
