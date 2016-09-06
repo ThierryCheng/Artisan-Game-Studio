@@ -6,17 +6,17 @@ namespace AGS.Characters
 {
 	public class Human : BaseCharacter
 	{
-		protected void Start()
+		protected  new void Start()
 		{
 			base.Start ();
 			//m_MoveTarget = new Vector3 (1000, 0, 1000);
-			gameObject.tag = "Human";
+			gameObject.tag = TagManager.HUMAN;
 			//m_HitPoints = 200;
 			//gameObject.layer = "Human";
 
 		}
 
-		protected void ActionCallBack(string name)
+		protected new void ActionCallBack(string name)
 		{
 			if(TargetInRange(m_CanBeAttacked, m_ActionPerformedTarget))
 			{

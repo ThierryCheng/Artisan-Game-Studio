@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using AGS.Config;
+using UnityEngine.UI;
+using AGS.UI;
 
 namespace AGS.Characters
 {
@@ -53,6 +55,10 @@ namespace AGS.Characters
 		public    int             m_FarmiliarityToHumanLanguage;
 		public    int             m_Deviation;
 
+		//血条显示
+		public    Canvas          m_HealthCanvas;
+		private   Slider          m_HealthSlider;
+		private   HealthBar       barClass;
 		//Text m_text;
 		
 		protected void Start()
@@ -93,7 +99,7 @@ namespace AGS.Characters
 		{
 			Vector3 forward = transform.TransformDirection(Vector3.forward);
 			Vector3 from = transform.TransformPoint (m_CapsuleCenter);
-			RaycastHit hit;
+			//RaycastHit hit;
 
 			RaycastHit[] infos = Physics.SphereCastAll(from, 
 			                                           m_SphereRadius, 
@@ -339,9 +345,11 @@ namespace AGS.Characters
 		{
 			//Debug.Log (para.m_HitPoint);
 			m_Health -= para.Damage;
+			ShowHealthBar ();
+
 			if (m_Health <= 0) 
 			{
-				Debug.Log("DIe");
+				//Debug.Log("DIe");
 				m_Animator.SetTrigger ("Die");
 
 				m_IsDead = true;
@@ -366,7 +374,7 @@ namespace AGS.Characters
 
 		private void StartStun(float stun)
 		{
-			Debug.Log ("Start Stun");
+			//Debug.Log ("Start Stun");
 			float m_MaxStun = GameConstants.MaxStunTime;
 			m_StunDuration = m_MaxStun * (stun/GameConstants.MaxStunPower);
 			m_Animator.SetBool ("Stun", true);
@@ -375,7 +383,7 @@ namespace AGS.Characters
 
 		private void StartKnockBack(float knockBack, Vector3 dir)
 		{
-			Debug.Log ("Start knockBack");
+			//Debug.Log ("Start knockBack");
 			float m_MaxKnockBackSpeed = GameConstants.MaxKnockBackSpeed;
 			m_KnockBackSpeed = m_MaxKnockBackSpeed * (knockBack/GameConstants.MaxKnockBackPower);
 			m_KnockBackDirection = dir;
@@ -384,6 +392,40 @@ namespace AGS.Characters
 		public bool IsCurrentStateName(string name)
 		{
 			return m_Animator.GetCurrentAnimatorStateInfo (0).IsName (name);
+		}
+
+        //控制角色血条显示
+		private void ShowHealthBar()
+		{
+			if(m_HealthCanvas != null)
+			{
+				if(m_HealthSlider == null)
+				{
+					m_HealthSlider = m_HealthCanvas.GetComponentInChildren<Slider> ();
+					barClass = m_HealthCanvas.GetComponent<HealthBar> ();
+					//TODO:临时使用 m_MaxHealth 有初始值的时候再移除
+					//m_MaxHealth = 200;
+
+				}
+				if (!m_HealthSlider.IsActive ()) {
+					m_HealthCanvas.enabled = true;
+					m_HealthSlider.enabled = true;
+					//Slider取值范围(0~1)
+					m_HealthSlider.value = 1 - m_Health / (float)m_MaxHealth;
+					barClass.timer = 0;
+					//Debug.Log ("slider.value" + m_HealthSlider.value);
+				} else {
+					m_HealthSlider.value = 1 - m_Health / (float)m_MaxHealth;
+					barClass.timer = 0;
+					//Debug.Log ("slider.value" + m_HealthSlider.value);
+				}
+				if(m_Health <= 0)
+				{
+					m_HealthCanvas.enabled = false;
+					m_HealthSlider.enabled = false;
+				}
+				//Debug.Log ("slider.value"+m_HealthSlider.value);
+			}
 		}
 		/*private IEnumerator StartStun(int stun)
 		{

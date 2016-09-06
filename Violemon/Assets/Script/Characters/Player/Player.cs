@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using AGS.Config;
 
 namespace AGS.Characters
@@ -7,24 +6,24 @@ namespace AGS.Characters
 	public class Player : BaseCharacter
 	{
 
-		protected void Start()
+		protected new void Start()
 		{
 			base.Start ();
 			//m_MoveTarget = new Vector3 (1000, 0, 1000);
-			gameObject.tag = "Player";
+			gameObject.tag = TagManager.PLAYER;
 			//m_HitPoints = 400;
 			//gameObject.layer = "Human";
 			
 		}
 
-		protected void ActionCallBack(string name)
+		protected new void ActionCallBack(string name)
 		{
-			Debug.Log(name + "  111111");
+			//Debug.Log(name + "  111111");
 			if (name.Equals ("Attack 001") || name.Equals ("Attack 002") || name.Equals ("Attack 003")) 
 			{
 				if(TargetInRange(m_CanBeAttacked, m_ActionPerformedTarget))
 				{
-					Debug.Log(name + "  111111");
+					//Debug.Log(name + "  111111");
 					AttackItem item = GameConstants.GetAttackItem("Violemon_" + name);
 					if(item != null)
 					{
