@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using AGS.Config;
 using UnityEngine.UI;
 using AGS.UI;
@@ -11,6 +12,7 @@ namespace AGS.Characters
 	[RequireComponent(typeof(Animator))]
 	public abstract class BaseCharacter : MonoBehaviour
 	{
+		protected List<BaseAttributeListener> listeners = new List<BaseAttributeListener> ();
 		protected float m_MovingTurnSpeed = 360;
 		protected float m_StationaryTurnSpeed = 180;
 		protected float m_GroundCheckDistance = 0.3f;
@@ -35,10 +37,13 @@ namespace AGS.Characters
 		protected float           m_KnockBackSpeed;
 		protected Vector3         m_KnockBackDirection;
 		protected float           m_AbleToAttack;
+		protected float           m_AbleToAttackRadius;
 		protected float           m_CanBeAttacked;
-		protected float           m_SphereRadius;
+		protected float           m_CanBeAttackedRadius;
 		protected bool            m_IsDead;
 		protected float           m_LastSecond;
+		protected float           m_TargetDirectionUpdateRate;
+		protected float           m_LastDirectionUpdateTime;
 
 		public    float           m_MaxHealth;
 		public    float           m_Health;
@@ -49,6 +54,7 @@ namespace AGS.Characters
 		public    float           m_BasicAttackSpeed;
 		public    float           m_MoveSpeed;
 		public    int             m_Buff;
+		public    float           m_TurnMultiplier; 
 
 		//血条显示
 		public    Canvas          m_HealthCanvas;
@@ -67,11 +73,14 @@ namespace AGS.Characters
 			m_VectorMask = new Vector3 (1, 0, 1);
 			//m_text = GameObject.Find ("Text").GetComponent<Text>();
 			m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
-			m_AbleToAttack = 1.0f;
-			m_CanBeAttacked = 2.4f;
-			m_SphereRadius = 0.8f;
+			//m_AbleToAttack = 1.0f;
+			//m_CanBeAttacked = 2.4f;
+			//m_SphereRadius = 0.8f;
 			m_IsDead = false;
 			m_LastSecond = Time.time;
+			m_TargetDirectionUpdateRate = 0f;
+			m_LastDirectionUpdateTime = 0f;
+			m_TurnMultiplier = 1f;
 		}
 
 		public void BlockMove(bool block)
@@ -91,16 +100,16 @@ namespace AGS.Characters
 			m_MoveTarget = Vector3.zero;
 		}
 
-		protected bool TargetInRange(float range, GameObject target)
+		protected bool TargetInRange(float range, float radius,GameObject target)
 		{
 			Vector3 forward = transform.TransformDirection(Vector3.forward);
 			Vector3 from = transform.TransformPoint (m_CapsuleCenter);
 			//RaycastHit hit;
 
 			RaycastHit[] infos = Physics.SphereCastAll(from, 
-			                                           m_SphereRadius, 
+			                                           radius, 
 			                                           forward, 
-			                                           range - m_SphereRadius);
+			                                           range - radius);
 			foreach(RaycastHit info in infos)
 			{
 				if(info.collider.gameObject == target)
@@ -135,10 +144,9 @@ namespace AGS.Characters
 				else
 				{
 					m_Animator.SetBool("HasTarget", true);
-					if(!TargetInRange(m_AbleToAttack, m_ActionTarget))
+					if(!TargetInRange(m_AbleToAttack, m_AbleToAttackRadius, m_ActionTarget))
 					{
-						m_MoveDirection = m_ActionTarget.transform.position - transform.position;
-						m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
+						UpdateDirection();
 						m_Animator.SetBool ("Run", true);
 						m_Animator.SetBool("NormalAttack", false);
 					}
@@ -163,8 +171,34 @@ namespace AGS.Characters
 			}
 		}
 
+		private void UpdateDirection()
+		{
+			if(m_TargetDirectionUpdateRate <= 0f)
+			{
+				m_MoveDirection = m_ActionTarget.transform.position - transform.position;
+				m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
+			}
+			else if((Time.time - m_LastDirectionUpdateTime) >= m_TargetDirectionUpdateRate)
+			{
+				m_MoveDirection = m_ActionTarget.transform.position - transform.position;
+				m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
+				m_LastDirectionUpdateTime = Time.time;
+			}
+		}
+
 		public void AddAttributeListener(BaseAttributeListener listener)
-		{}
+		{
+			listeners.Add (listener);
+			/*foreach (Person p in this)
+
+            {
+
+                val += p.Name + ",";
+
+            }*/
+		}
+
+
 
 		private void Update()
 		{
@@ -311,13 +345,13 @@ namespace AGS.Characters
 		/*void HandleGroundedMovement(Vector3 move)
 		{
 			Vector3 v = (m_Animator.deltaPosition * m_MoveSpeedMultiplier) / Time.deltaTime;
-			
+
 			// we preserve the existing y part of the current velocity.
 			v.y = m_Rigidbody.velocity.y;
 			m_Rigidbody.velocity = v;
 		}*/
 		
-		void ApplyMove(Vector3 move)
+		protected virtual void ApplyMove(Vector3 move)
 		{
 			move = new Vector3 (move.x, 0, move.z);
 			Vector3 moveAmount = Vector3.zero;
@@ -330,7 +364,7 @@ namespace AGS.Characters
 		{
 			// help the character turn faster (this is in addition to root rotation in the animation)
 			float turnSpeed = Mathf.Lerp(m_StationaryTurnSpeed, m_MovingTurnSpeed, m_ForwardAmount);
-			transform.Rotate(0, m_TurnAmount * turnSpeed * Time.deltaTime, 0);
+			transform.Rotate(0, m_TurnMultiplier * m_TurnAmount * turnSpeed * Time.deltaTime, 0);
 		}
 		
 		/*public void OnAnimatorMove()

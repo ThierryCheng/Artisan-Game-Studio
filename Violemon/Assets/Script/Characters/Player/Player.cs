@@ -18,12 +18,19 @@ namespace AGS.Characters
 			gameObject.tag = TagManager.PLAYER;
 			//m_HitPoints = 400;
 			//gameObject.layer = "Human";
-			m_MaxFeededPoint = GameConstants.Violemon_InitialMaxFeededPoint;
-			m_FeededPoint = m_MaxFeededPoint;
-			m_MaxHealth = GameConstants.Violemon_InitialMaxHealth;
-			m_Health = m_MaxHealth;
-			m_MaxStamina = GameConstants.Violemon_InitialMaxStamina;
-			m_Stamina = m_MaxStamina;
+			m_MaxFeededPoint            = GameConstants.Violemon_InitialMaxFeededPoint;
+			m_FeededPoint               = GameConstants.Violemon_InitialMaxFeededPoint;
+			m_MaxHealth                 = GameConstants.Violemon_InitialMaxHealth;
+			m_Health                    = GameConstants.Violemon_InitialMaxHealth;
+			m_MaxStamina                = GameConstants.Violemon_InitialMaxStamina;
+			m_Stamina                   = GameConstants.Violemon_InitialMaxStamina;
+			m_AbleToAttack              = GameConstants.Violemon_AbleToAttack;
+			m_AbleToAttackRadius        = GameConstants.Violemon_AbleToAttackRadius;
+			m_CanBeAttacked             = GameConstants.Violemon_CanBeAttacked;
+			m_CanBeAttackedRadius       = GameConstants.Violemon_CanBeAttackedRadius;
+			m_TargetDirectionUpdateRate = GameConstants.Violemon_TargetDirectionUpdateRate;
+			m_TurnMultiplier            = GameConstants.Violemon_TurnMultiplier;
+			m_MoveSpeed                 = GameConstants.Violemon_MoveSpeed;
 		}
 
 		protected override void UpdateSubAttributes()
@@ -70,7 +77,7 @@ namespace AGS.Characters
 			//Debug.Log(name + "  111111");
 			if (name.Equals ("Attack 001") || name.Equals ("Attack 002") || name.Equals ("Attack 003")) 
 			{
-				if(TargetInRange(m_CanBeAttacked, m_ActionPerformedTarget))
+				if(TargetInRange(m_CanBeAttacked, m_CanBeAttackedRadius, m_ActionPerformedTarget))
 				{
 					//Debug.Log(name + "  111111");
 					AttackItem item = GameConstants.GetAttackItem("Violemon_" + name);
