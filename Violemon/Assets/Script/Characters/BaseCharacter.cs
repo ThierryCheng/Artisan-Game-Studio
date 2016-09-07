@@ -103,7 +103,7 @@ namespace AGS.Characters
 		protected bool TargetInRange(float range, float radius,GameObject target)
 		{
 			Vector3 forward = transform.TransformDirection(Vector3.forward);
-			Vector3 from = transform.TransformPoint (m_CapsuleCenter);
+			Vector3 from = transform.TransformPoint (m_CapsuleCenter + new Vector3(0f, -(m_Capsule.height/6f), 0f));
 			//RaycastHit hit;
 
 			RaycastHit[] infos = Physics.SphereCastAll(from, 
