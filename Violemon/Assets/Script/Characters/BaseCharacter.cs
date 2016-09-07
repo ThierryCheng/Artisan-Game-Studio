@@ -198,8 +198,46 @@ namespace AGS.Characters
             }*/
 		}
 
+		private void HealthChanged(float ori, float cur)
+		{
+			foreach (BaseAttributeListener l in listeners)
+			{
+				l.OnHealthChange(ori, cur);
+			}
+		}
 
+		private void BasicPowerChanged(float ori, float cur)
+		{
+			foreach (BaseAttributeListener l in listeners)
+			{
+				l.OnBasicPowerChange(ori, cur);
+			}
+		}
 
+		private void MaxHealthChanged(float ori, float cur)
+		{
+			foreach (BaseAttributeListener l in listeners)
+			{
+				l.OnMaxHealthChange(ori, cur);
+			}
+		}
+
+		private void MaxStaminaChanged(float ori, float cur)
+		{
+			foreach (BaseAttributeListener l in listeners)
+			{
+				l.OnMaxStaminaChange(ori, cur);
+			}
+		}
+
+		private void StaminaChanged(float ori, float cur)
+		{
+			foreach (BaseAttributeListener l in listeners)
+			{
+				l.OnStaminaChange(ori, cur);
+			}
+		}
+		
 		private void Update()
 		{
 			PerSecondUpdate ();
@@ -407,7 +445,9 @@ namespace AGS.Characters
 		public void Attacked(AttackItem para)
 		{
 			//Debug.Log (para.m_HitPoint);
+			float ori = m_Health;
 			m_Health -= para.Damage;
+			HealthChanged (ori, m_Health);
 			ShowHealthBar ();
 
 			if (m_Health <= 0) 

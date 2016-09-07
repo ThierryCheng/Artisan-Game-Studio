@@ -43,7 +43,9 @@ namespace AGS.Characters
 		{
 			if(m_FeededPoint > 0f)
 			{
+				float ori = m_FeededPoint;
 				m_FeededPoint -= m_MaxFeededPoint * GameConstants.Violemon_FeededPointDecreaseRate;
+				FeededPointChanged(ori, m_FeededPoint);
 				if(m_FeededPoint < 0f)
 				{
 					m_FeededPoint = 0f;
@@ -55,7 +57,9 @@ namespace AGS.Characters
 		{
 			if(m_Stamina < m_MaxStamina)
 			{
+				float ori = m_Stamina;
 				m_Stamina += (m_FeededPoint / m_MaxFeededPoint) * 3f;
+				StaminaChanged(ori, m_Stamina);
 				if(m_Stamina > m_MaxStamina)
 				{
 					m_Stamina = m_MaxStamina;
@@ -97,5 +101,18 @@ namespace AGS.Characters
 
 			//Debug.Log ("CallBack: " + name);
 		}
+
+		protected void FeededPointChanged(float ori, float cur)
+		{
+			foreach (BaseAttributeListener l in listeners)
+			{
+				if(l is PlayerAttributeListener)
+				{
+					((PlayerAttributeListener)l).OnFeededPointChange(ori, cur);
+				}
+			}
+		}
+
+
 	}
 }
