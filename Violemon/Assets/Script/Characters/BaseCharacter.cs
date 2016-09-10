@@ -198,7 +198,7 @@ namespace AGS.Characters
             }*/
 		}
 
-		private void HealthChanged(float ori, float cur)
+		protected void HealthChanged(float ori, float cur)
 		{
 			foreach (BaseAttributeListener l in listeners)
 			{
@@ -206,7 +206,7 @@ namespace AGS.Characters
 			}
 		}
 
-		private void BasicPowerChanged(float ori, float cur)
+		protected void BasicPowerChanged(float ori, float cur)
 		{
 			foreach (BaseAttributeListener l in listeners)
 			{
@@ -214,7 +214,7 @@ namespace AGS.Characters
 			}
 		}
 
-		private void MaxHealthChanged(float ori, float cur)
+		protected void MaxHealthChanged(float ori, float cur)
 		{
 			foreach (BaseAttributeListener l in listeners)
 			{
@@ -222,7 +222,7 @@ namespace AGS.Characters
 			}
 		}
 
-		private void MaxStaminaChanged(float ori, float cur)
+		protected void MaxStaminaChanged(float ori, float cur)
 		{
 			foreach (BaseAttributeListener l in listeners)
 			{
@@ -230,7 +230,7 @@ namespace AGS.Characters
 			}
 		}
 
-		private void StaminaChanged(float ori, float cur)
+		protected void StaminaChanged(float ori, float cur)
 		{
 			foreach (BaseAttributeListener l in listeners)
 			{
@@ -444,7 +444,6 @@ namespace AGS.Characters
 
 		public void Attacked(AttackItem para)
 		{
-			//Debug.Log (para.m_HitPoint);
 			float ori = m_Health;
 			m_Health -= para.Damage;
 			HealthChanged (ori, m_Health);
