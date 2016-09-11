@@ -1,26 +1,84 @@
 ﻿using UnityEngine;
 using System.Collections;
+using AGS.Config;
+using AGS.Util;
 
-public class World : MonoBehaviour {
+namespace AGS.World
+{
+	public class World : MonoBehaviour {
+		
+		private GameObject m_DirectionalLight;
+		private GameObject m_Violemon;
+		private Quaternion m_OriLightRotation = Quaternion.Euler (-60f, -180f, -0f);
+		private AGSTime    m_AGSTime;
+		private float      m_LastUpdateSunDirectionTime;
+		public  Material   m_PurpleNebula;
+		private Material   m_OriSkybox;
+			//private Vector3    m_OriLightDir;
+			//private float      m_CurrentTime;
+			
+		void Start () {
+			m_DirectionalLight = GameObject.Find ("Directional Light");
+			if(m_DirectionalLight == null)
+			{
+				return;
+			}
+			m_Violemon = GameObject.Find ("Violemon");
+			if(m_DirectionalLight == null)
+			{
+				return;
+			}
+			//m_DirectionalLight.transform.LookAt (m_Violemon.transform.position);
+			//m_DirectionalLight.transform.rotation = m_OriLightRotation;
+			m_AGSTime = gameObject.GetComponent<AGSTime> ();
+			//m_OriLightDir = m_DirectionalLight.transform.TransformDirection (Vector3.forward);
+			//m_CurrentTime = 6 * 60 * 60;
+			//m_PurpleNebula = Resources.Load("Test/Skyboxes/PurpleNebula/PurpleNebula") as Material;
 
-	private GameObject m_DirectionalLight;
-	private GameObject m_Violemon;
-	void Start () {
-		m_DirectionalLight = GameObject.Find ("Directional Light");
-		if(m_DirectionalLight == null)
-		{
-			return;
+
+
+			m_OriSkybox = RenderSettings.skybox;
+			//AGSEvent changeSkyboxEvent = new AGSEvent (){};
+			if (m_PurpleNebula != null) {
+				AGSEvent changeSkyboxEvent = new ChangeSkyboxEvent (m_PurpleNebula);
+				m_AGSTime.AddFixedTimeEvent (18 * 60 * 60, changeSkyboxEvent);
+				changeSkyboxEvent = new ChangeSkyboxEvent (m_OriSkybox);
+				m_AGSTime.AddFixedTimeEvent (6 * 60 * 60, changeSkyboxEvent);
+			}
 		}
-		m_Violemon = GameObject.Find ("Violemon");
-		if(m_DirectionalLight == null)
-		{
-			return;
+		
+		// Update is called once per frame
+		void Update () {
+			if (GameConstants.UpdateSunDirectionDuration >= 0f) {
+				if ((Time.time - m_LastUpdateSunDirectionTime) >= GameConstants.UpdateSunDirectionDuration) {
+					m_LastUpdateSunDirectionTime = Time.time;
+					UpdateSunDirection ();
+				}
+			} else {
+				UpdateSunDirection();
+			}
+			//CurrentTime ();
 		}
-		//m_DirectionalLight.transform.LookAt (m_Violemon.transform.position);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		m_DirectionalLight.transform.Rotate(0, 20 * Time.deltaTime, 0);
+
+		private void UpdateSunDirection()
+		{
+			m_DirectionalLight.transform.rotation = m_OriLightRotation;
+			m_DirectionalLight.transform.Rotate (0, m_AGSTime.CurrentSunDirection, 0);
+		}
+		private class ChangeSkyboxEvent : AGSEvent{
+
+			public Material m_PurpleNebula;
+
+			public ChangeSkyboxEvent(Material m_PurpleNebula)
+			{
+				this.m_PurpleNebula = m_PurpleNebula;
+			}
+
+			public void Exec()
+			{
+				RenderSettings.skybox = m_PurpleNebula;
+
+			}
+		}
 	}
 }
