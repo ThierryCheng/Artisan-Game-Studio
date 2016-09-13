@@ -25,7 +25,7 @@ namespace AGS.Characters
 		
 		protected override void ActionCallBack(string name)
 		{
-			if(TargetInRange(m_CanBeAttacked, m_CanBeAttackedRadius, m_ActionPerformedTarget))
+			/*if(TargetInRange(m_CanBeAttacked, m_CanBeAttackedRadius, m_ActionPerformedTarget))
 			{
 				AttackItem item = GameConstants.GetAttackItem("HumanKnight_" + name);
 				if(item != null)
@@ -39,7 +39,8 @@ namespace AGS.Characters
 						
 					}
 				}
-			}
+			}*/
+			m_ActionTarget.ActionCallBack (name);
 		}
 	}
 }

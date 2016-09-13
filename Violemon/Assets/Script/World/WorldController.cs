@@ -5,7 +5,7 @@ using AGS.Util;
 
 namespace AGS.World
 {
-	public class World : MonoBehaviour {
+	public class WorldController : MonoBehaviour {
 		
 		private GameObject m_DirectionalLight;
 		private GameObject m_Violemon;
@@ -17,6 +17,14 @@ namespace AGS.World
 			//private Vector3    m_OriLightDir;
 			//private float      m_CurrentTime;
 			
+		public GameObject Violemon
+		{
+			get
+			{
+				return m_Violemon;
+			}
+		}
+
 		void Start () {
 			m_DirectionalLight = GameObject.Find ("Directional Light");
 			if(m_DirectionalLight == null)

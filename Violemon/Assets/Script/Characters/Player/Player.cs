@@ -80,7 +80,7 @@ namespace AGS.Characters
 		protected override void ActionCallBack(string name)
 		{
 			//Debug.Log(name + "  111111");
-			if (name.Equals ("Attack 001") || name.Equals ("Attack 002") || name.Equals ("Attack 003")) 
+			/*if (name.Equals ("Attack 001") || name.Equals ("Attack 002") || name.Equals ("Attack 003")) 
 			{
 				if(TargetInRange(m_CanBeAttacked, m_CanBeAttackedRadius, m_ActionPerformedTarget))
 				{
@@ -98,7 +98,8 @@ namespace AGS.Characters
 						}
 					}
 				}
-			}
+			}*/
+			m_ActionTarget.ActionCallBack (name);
 
 			//Debug.Log ("CallBack: " + name);
 		}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace AGS.Config
 {
     public class GameConstants{
-		public static float DayDuration = 10f;
+		public static float DayDuration = 30f;
 		public static float UpdateSunDirectionDuration = 0f;
 
 		public static float MaxStunTime = 1.0f;

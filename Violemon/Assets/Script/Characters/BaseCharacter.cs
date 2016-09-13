@@ -26,8 +26,8 @@ namespace AGS.Characters
 		protected Vector3         m_MoveDirection;
 		protected Vector3         m_VectorMask;
 		protected Vector3         m_MoveTarget;
-		public    GameObject      m_ActionTarget;
-		protected GameObject      m_ActionPerformedTarget;
+		public    AGSAction       m_ActionTarget;
+		protected AGSAction       m_ActionPerformedTarget;
 		protected Animator        m_Animator;
 		protected bool            m_BlockMove;
 		//float m_CapsuleHeight;
@@ -36,10 +36,10 @@ namespace AGS.Characters
 		protected float           m_StunDuration;
 		protected float           m_KnockBackSpeed;
 		protected Vector3         m_KnockBackDirection;
-		protected float           m_AbleToAttack;
-		protected float           m_AbleToAttackRadius;
-		protected float           m_CanBeAttacked;
-		protected float           m_CanBeAttackedRadius;
+		public    float           m_AbleToAttack;
+		public    float           m_AbleToAttackRadius;
+		public    float           m_CanBeAttacked;
+		public    float           m_CanBeAttackedRadius;
 		protected bool            m_IsDead;
 		protected float           m_LastSecond;
 		protected float           m_TargetDirectionUpdateRate;
@@ -61,7 +61,14 @@ namespace AGS.Characters
 		private   Slider          m_HealthSlider;
 		private   HealthBar       barClass;
 		//Text m_text;
-		
+		public    Animator        Animator
+		{
+			get
+			{
+				return m_Animator;
+			}
+		}
+
 		protected void Start()
 		{
 			m_Animator = GetComponent<Animator>();
@@ -94,13 +101,13 @@ namespace AGS.Characters
 			m_ActionTarget = null;
 		}
 		
-		public void SetActionTarget(GameObject target)
+		public void SetActionTarget(AGSAction target)
 		{
 			m_ActionTarget = target;
 			m_MoveTarget = Vector3.zero;
 		}
 
-		protected bool TargetInRange(float range, float radius,GameObject target)
+		public bool TargetInRange(float range, float radius,GameObject target)
 		{
 			Vector3 forward = transform.TransformDirection(Vector3.forward);
 			Vector3 from = transform.TransformPoint (m_CapsuleCenter + new Vector3(0f, -(m_Capsule.height/6f), 0f));
@@ -136,7 +143,7 @@ namespace AGS.Characters
 			}
 			else if(m_ActionTarget != null)
 			{
-				if(m_ActionTarget.gameObject.GetComponent<BaseCharacter>().IsDead())
+				if(m_ActionTarget.TargetObj().GetComponent<BaseCharacter>().IsDead())
 				{
 					m_ActionTarget = null;
 					m_Animator.SetBool("HasTarget", false);
@@ -144,15 +151,16 @@ namespace AGS.Characters
 				else
 				{
 					m_Animator.SetBool("HasTarget", true);
-					if(!TargetInRange(m_AbleToAttack, m_AbleToAttackRadius, m_ActionTarget))
+					UpdateDirection();
+					if(!m_ActionTarget.CanStartAction())
 					{
-						UpdateDirection();
+
 						m_Animator.SetBool ("Run", true);
-						m_Animator.SetBool("NormalAttack", false);
+						m_ActionTarget.StopAction();
 					}
 					else
 					{
-						m_Animator.SetBool("NormalAttack", true);
+						m_ActionTarget.StartAction();
 						m_Animator.SetBool ("Run", false);
 						m_ActionPerformedTarget = m_ActionTarget;
 						
@@ -171,16 +179,26 @@ namespace AGS.Characters
 			}
 		}
 
+		public bool IsActionTargetTheSame()
+		{
+			return true;
+		}
+
+		public void ClearActionTarget()
+		{
+
+		}
+
 		private void UpdateDirection()
 		{
 			if(m_TargetDirectionUpdateRate <= 0f)
 			{
-				m_MoveDirection = m_ActionTarget.transform.position - transform.position;
+				m_MoveDirection = m_ActionTarget.TargetObj().transform.position - transform.position;
 				m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
 			}
 			else if((Time.time - m_LastDirectionUpdateTime) >= m_TargetDirectionUpdateRate)
 			{
-				m_MoveDirection = m_ActionTarget.transform.position - transform.position;
+				m_MoveDirection = m_ActionTarget.TargetObj().transform.position - transform.position;
 				m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
 				m_LastDirectionUpdateTime = Time.time;
 			}

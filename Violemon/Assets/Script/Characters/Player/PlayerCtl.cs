@@ -134,11 +134,10 @@ namespace AGS.Characters
 				GetMouseScreenPointToRayHitTarget();
 				if(m_HitGameObj != null)
 				{
-					m_Player.SetActionTarget(m_HitGameObj);
+					AGSAction action = new ViolemonNormalAttack(m_Player, m_HitGameObj);
+					m_Player.SetActionTarget(action);
 				}
-
 			}
-
 		}
 
 		// Fixed update is called in sync with physics

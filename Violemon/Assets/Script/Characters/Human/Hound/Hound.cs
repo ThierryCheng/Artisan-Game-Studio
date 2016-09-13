@@ -31,7 +31,7 @@ namespace AGS.Characters
 
 		protected override void ApplyMove(Vector3 move)
 		{
-			if (m_ActionTarget != null && (Vector3.Distance (m_ActionTarget.transform.position, transform.position) <= 2.5f)) {
+			if (m_ActionTarget != null && (Vector3.Distance (m_ActionTarget.TargetObj().transform.position, transform.position) <= 2.5f)) {
 				base.ApplyMove(move);
 			} else {
 				Vector3 moveAmount = Vector3.zero;
@@ -44,7 +44,7 @@ namespace AGS.Characters
 
 		protected override void ActionCallBack(string name)
 		{
-			if(TargetInRange(m_CanBeAttacked, m_CanBeAttackedRadius, m_ActionPerformedTarget))
+			/*if(TargetInRange(m_CanBeAttacked, m_CanBeAttackedRadius, m_ActionPerformedTarget))
 			{
 				AttackItem item = GameConstants.GetAttackItem("Hound_" + name);
 				if(item != null)
@@ -58,7 +58,8 @@ namespace AGS.Characters
 						
 					}
 				}
-			}
+			}*/
+			m_ActionTarget.ActionCallBack (name);
 		}
 	}
 }
