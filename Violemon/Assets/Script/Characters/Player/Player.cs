@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using AGS.Config;
+using AGS.Items;
 
 namespace AGS.Characters
 {
@@ -113,6 +114,9 @@ namespace AGS.Characters
 			}
 		}
 
+		public void ConsumeObj(Consumable obj)
+		{
 
+		}
 	}
 }
