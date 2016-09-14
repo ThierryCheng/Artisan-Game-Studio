@@ -99,7 +99,7 @@ namespace AGS.Characters
 					}
 				}
 			}*/
-			m_ActionTarget.ActionCallBack (name);
+			m_ActionPerformedTarget.ActionCallBack (name);
 
 			//Debug.Log ("CallBack: " + name);
 		}
@@ -115,9 +115,31 @@ namespace AGS.Characters
 			}
 		}
 
+		public void Picked(Item item)
+		{
+			foreach (BaseAttributeListener l in listeners)
+			{
+				if(l is PlayerAttributeListener)
+				{
+					((PlayerAttributeListener)l).OnGainedObj(item);
+				}
+			}
+		}
+
 		public void ConsumeObj(Consumable obj)
 		{
 
+		}
+
+		public void Pick(GameObject obj)
+		{
+			AGSAction action = new ViolemonPick (this, obj);
+			this.SetActionTarget (action);
+		}
+
+		protected override void OnDie()
+		{
+			//Debug.Log ("Called in Player");
 		}
 	}
 }

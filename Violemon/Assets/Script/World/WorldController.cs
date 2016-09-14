@@ -2,6 +2,7 @@
 using System.Collections;
 using AGS.Config;
 using AGS.Util;
+using AGS.Items;
 
 namespace AGS.World
 {
@@ -53,6 +54,7 @@ namespace AGS.World
 				changeSkyboxEvent = new ChangeSkyboxEvent (m_OriSkybox);
 				m_AGSTime.AddFixedTimeEvent (6 * 60 * 60, changeSkyboxEvent);
 			}
+			ItemManager.Instance ().Init ();
 		}
 		
 		// Update is called once per frame

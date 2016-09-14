@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace AGS.Config
 {
     public class GameConstants{
-		public static float DayDuration = 30f;
+		public static float DayDuration = 3000f;
 		public static float UpdateSunDirectionDuration = 0f;
 
 		public static float MaxStunTime = 1.0f;
@@ -36,7 +36,7 @@ namespace AGS.Config
 		public static float Hound_TargetDirectionUpdateRate = 0.5f;
 		public static float Hound_MoveSpeed = 5f;
 
-		public static float HumanKnight_InitialMaxHealth = 200f;
+		public static float HumanKnight_InitialMaxHealth = 100f;
 		public static float HumanKnight_InitialMaxStamina = 100f;
 		public static float HumanKnight_AbleToAttack = 1f;
 		public static float HumanKnight_AbleToAttackRadius = 0.2f;

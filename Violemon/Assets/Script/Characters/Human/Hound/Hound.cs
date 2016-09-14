@@ -29,6 +29,11 @@ namespace AGS.Characters
 			//Debug.Log ("Called in Player");
 		}
 
+		protected override void OnDie()
+		{
+			//Debug.Log ("Called in Player");
+		}
+
 		protected override void ApplyMove(Vector3 move)
 		{
 			if (m_ActionTarget != null && (Vector3.Distance (m_ActionTarget.TargetObj().transform.position, transform.position) <= 2.5f)) {
@@ -59,7 +64,7 @@ namespace AGS.Characters
 					}
 				}
 			}*/
-			m_ActionTarget.ActionCallBack (name);
+			m_ActionPerformedTarget.ActionCallBack (name);
 		}
 	}
 }

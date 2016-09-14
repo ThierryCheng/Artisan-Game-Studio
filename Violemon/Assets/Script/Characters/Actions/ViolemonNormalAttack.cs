@@ -57,11 +57,18 @@ namespace AGS.Characters
 						bc.Attacked(item);
 						if(m_BaseCharacter.IsActionTargetTheSame() && bc.IsDead())
 						{
+							m_BaseCharacter.Animator.SetBool("NormalAttack", false);
 							m_BaseCharacter.ClearActionTarget();
 						}
 					}
 				}
 			}
+		}
+
+		public void BeforeChangeTarget()
+		{
+			m_BaseCharacter.Animator.SetBool("NormalAttack", false);
+
 		}
 	}
 }

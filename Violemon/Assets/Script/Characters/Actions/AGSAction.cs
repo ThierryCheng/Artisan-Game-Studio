@@ -15,5 +15,7 @@ namespace AGS.Characters
 		bool CanStartAction ();
 
 		void ActionCallBack (string name);
+
+		void BeforeChangeTarget();
 	}
 }

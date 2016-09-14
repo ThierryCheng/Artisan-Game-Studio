@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using AGS.Config;
+using AGS.Items;
 
 namespace AGS.Characters
 {
@@ -40,7 +41,13 @@ namespace AGS.Characters
 					}
 				}
 			}*/
-			m_ActionTarget.ActionCallBack (name);
+			m_ActionPerformedTarget.ActionCallBack (name);
+		}
+
+		protected override void OnDie()
+		{
+
+			ItemManager.Instance ().GenerateItem (ItemIDs.Item_Apple, transform.position);
 		}
 	}
 }

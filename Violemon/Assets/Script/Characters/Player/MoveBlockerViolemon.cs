@@ -8,7 +8,7 @@ namespace AGS.Characters
 		override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) 
 		{
 			if (stateInfo.IsName ("Attack 001")) {
-				Debug.Log("block");
+				//Debug.Log("block");
 				animator.gameObject.GetComponent<BaseCharacter>().BlockMove(true);
 			}
 		}

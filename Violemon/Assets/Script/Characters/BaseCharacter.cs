@@ -98,11 +98,17 @@ namespace AGS.Characters
 		public void SetMoveTarget(Vector3 target)
 		{
 			m_MoveTarget = target;
+			if (m_ActionTarget != null) {
+				m_ActionTarget.BeforeChangeTarget();
+			}
 			m_ActionTarget = null;
 		}
 		
 		public void SetActionTarget(AGSAction target)
 		{
+			if (m_ActionTarget != null) {
+				m_ActionTarget.BeforeChangeTarget();
+			}
 			m_ActionTarget = target;
 			m_MoveTarget = Vector3.zero;
 		}
@@ -143,7 +149,8 @@ namespace AGS.Characters
 			}
 			else if(m_ActionTarget != null)
 			{
-				if(m_ActionTarget.TargetObj().GetComponent<BaseCharacter>().IsDead())
+				BaseCharacter baseCharacter = m_ActionTarget.TargetObj().GetComponent<BaseCharacter>();
+				if(baseCharacter != null && baseCharacter.IsDead())
 				{
 					m_ActionTarget = null;
 					m_Animator.SetBool("HasTarget", false);
@@ -181,12 +188,16 @@ namespace AGS.Characters
 
 		public bool IsActionTargetTheSame()
 		{
-			return true;
+			if (m_ActionTarget != null && m_ActionPerformedTarget != null && m_ActionTarget == m_ActionPerformedTarget) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 		public void ClearActionTarget()
 		{
-
+			m_ActionTarget = null;
 		}
 
 		private void UpdateDirection()
@@ -473,6 +484,10 @@ namespace AGS.Characters
 				m_Animator.SetTrigger ("Die");
 
 				m_IsDead = true;
+				m_Rigidbody.useGravity = false;
+				m_Capsule.enabled = false;
+
+				OnDie();
 				//this.gameObject.SetActive(false);
 				return;
 			}
@@ -486,6 +501,8 @@ namespace AGS.Characters
 				StartKnockBack(para.KnockBack, para.KnockBackDirection);
 			}
 		}
+
+		protected abstract void OnDie ();
 
 		public bool IsDead()
 		{
