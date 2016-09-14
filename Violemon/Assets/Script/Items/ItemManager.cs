@@ -41,6 +41,11 @@ namespace AGS.Items
 			m_ItemTemplates.Add (key, item);
 		}
 
+		public ItemTemp GetItemTemplate(string key)
+		{
+			return m_ItemTemplates [key];
+		}
+
 		public GameObject GenerateItem(string key, Vector3 position)
 		{
 			if (!m_ItemTemplates.ContainsKey (key)) {

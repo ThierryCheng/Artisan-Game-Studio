@@ -27,6 +27,10 @@ namespace AGS.Language
 			if (id.Equals ("Item_Apple_Name")) {
 				text = "Apple";
 			}
+
+			if (id.Equals ("Item_Apple_Desc")) {
+				text = "Apple Describ";
+			}
 			return text;
 		}
 	}

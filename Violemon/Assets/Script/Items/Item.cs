@@ -16,6 +16,14 @@ namespace AGS.Items
 			}
 		}
 
+		public string m_ItemDesc
+		{
+			get
+			{
+				return AGSLanguage.Instance().GetText(m_ItemID + "_Desc");
+			}
+		}
+
 		public int    m_ItemCount = 1;
 
 		public Item Clone()
