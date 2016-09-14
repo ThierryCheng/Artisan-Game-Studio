@@ -49,7 +49,7 @@ namespace AGS.Items
 			//Debug.Log ("123123" + m_ItemTemplates [key].m_GameObject);
 			GameObject obj = (MonoBehaviour.Instantiate (m_ItemTemplates [key].m_GameObject, position + Vector3.up * 3, Quaternion.identity) as GameObject);
 			Rigidbody rigidBody = obj.GetComponent<Rigidbody>();
-			rigidBody.velocity = Vector3.up * 3;
+			rigidBody.velocity = Vector3.up * 2;
 			ItemController controller = obj.GetComponent<ItemController>();
 			controller.ItemInfo = m_ItemTemplates [key].m_Item.Clone ();
 			return obj;

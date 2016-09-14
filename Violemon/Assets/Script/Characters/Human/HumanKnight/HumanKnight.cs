@@ -46,7 +46,7 @@ namespace AGS.Characters
 
 		protected override void OnDie()
 		{
-
+			ItemManager.Instance ().GenerateItem (ItemIDs.Item_Apple, transform.position);
 			ItemManager.Instance ().GenerateItem (ItemIDs.Item_Apple, transform.position);
 		}
 	}
