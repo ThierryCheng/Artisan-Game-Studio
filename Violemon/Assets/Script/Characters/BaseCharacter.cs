@@ -471,12 +471,17 @@ namespace AGS.Characters
 		
 		protected abstract void ActionCallBack (string name);
 
-		public void Attacked(AttackItem para)
+		protected void ChangeHealth(float value)
 		{
 			float ori = m_Health;
-			m_Health -= para.Damage;
+			m_Health += value;
 			HealthChanged (ori, m_Health);
 			ShowHealthBar ();
+		}
+
+		public void Attacked(AttackItem para)
+		{
+			ChangeHealth (-para.Damage);
 
 			if (m_Health <= 0) 
 			{

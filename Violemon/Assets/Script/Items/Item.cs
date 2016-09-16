@@ -26,7 +26,7 @@ namespace AGS.Items
 
 		public int    m_ItemCount = 1;
 
-		public Item Clone()
+		public virtual Item Clone()
 		{
 			return null;
 		}

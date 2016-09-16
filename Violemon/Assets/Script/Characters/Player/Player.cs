@@ -40,13 +40,19 @@ namespace AGS.Characters
 			UpdateFeededPoint ();
 		}
 
+		protected void ChangeFeededPoint(float value)
+		{
+			float ori = m_FeededPoint;
+			m_FeededPoint += value;
+			FeededPointChanged(ori, m_FeededPoint);
+		}
+
 		protected void UpdateFeededPoint()
 		{
 			if(m_FeededPoint > 0f)
 			{
-				float ori = m_FeededPoint;
-				m_FeededPoint -= m_MaxFeededPoint * GameConstants.Violemon_FeededPointDecreaseRate;
-				FeededPointChanged(ori, m_FeededPoint);
+				ChangeFeededPoint(-(m_MaxFeededPoint * GameConstants.Violemon_FeededPointDecreaseRate));
+
 				if(m_FeededPoint < 0f)
 				{
 					m_FeededPoint = 0f;
@@ -117,6 +123,8 @@ namespace AGS.Characters
 
 		public void Picked(Item item)
 		{
+			Debug.Log ("111 " + item);
+			ConsumeObj (item as Consumable);
 			foreach (BaseAttributeListener l in listeners)
 			{
 				if(l is PlayerAttributeListener)
@@ -128,7 +136,11 @@ namespace AGS.Characters
 
 		public void ConsumeObj(Consumable obj)
 		{
-
+			if (obj == null) {
+				throw new UnityException("Consumable is null!");
+			}
+			ChangeHealth (obj.m_Health);
+			ChangeFeededPoint (obj.m_FeededPoint);
 		}
 
 		public void Pick(GameObject obj)

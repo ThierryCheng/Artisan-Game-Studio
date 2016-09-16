@@ -26,6 +26,7 @@ namespace AGS.Items
 			consumableItem = new Consumable ();
 			consumableItem.m_ItemID = ItemIDs.Item_Apple;
 			consumableItem.m_FeededPoint = 3f;
+			consumableItem.m_Health = 50f;
 			temp.m_GameObject = (GameObject)Resources.Load ("Prefabs/Items/Apple");
 			temp.m_Item = consumableItem;
 			AddItem (temp.m_Item.m_ItemID, temp);
@@ -57,6 +58,7 @@ namespace AGS.Items
 			rigidBody.velocity = Vector3.up * 2;
 			ItemController controller = obj.GetComponent<ItemController>();
 			controller.ItemInfo = m_ItemTemplates [key].m_Item.Clone ();
+			Debug.Log ("222 " + controller.ItemInfo);
 			return obj;
 		}
 	}

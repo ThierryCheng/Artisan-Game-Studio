@@ -19,7 +19,7 @@ namespace AGS.Items
 		//protected    float           m_BasicAttackSpeed;
 		//protected    float           m_MoveSpeed;
 
-		public Item Clone()
+		public override Item Clone()
 		{
 			Consumable ins = new Consumable ();
 			ins.m_ItemID = this.m_ItemID;
@@ -33,7 +33,7 @@ namespace AGS.Items
 			ins.m_Health = this.m_Health;
 			ins.m_MaxStamina = this.m_MaxStamina;
 			ins.m_Stamina = this.m_Stamina;
-			return null;
+			return ins;
 		}
 	}
 }
