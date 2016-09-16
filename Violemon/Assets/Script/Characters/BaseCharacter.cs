@@ -218,13 +218,20 @@ namespace AGS.Characters
 		public void AddAttributeListener(BaseAttributeListener listener)
 		{
 			listeners.Add (listener);
-			/*foreach (Person p in this)
+		}
 
-            {
+		protected void ChangeMaxHealth(float value)
+		{
+			float ori = m_MaxHealth;
+			m_MaxHealth += value;
+			MaxHealthChanged(ori, m_MaxHealth);
+		}
 
-                val += p.Name + ",";
-
-            }*/
+		protected void ChangeMaxStamina(float value)
+		{
+			float ori = m_MaxStamina;
+			m_MaxStamina += value;
+			MaxStaminaChanged(ori, m_MaxStamina);
 		}
 
 		protected void HealthChanged(float ori, float cur)
@@ -568,6 +575,11 @@ namespace AGS.Characters
 				}
 				//Debug.Log ("slider.value"+m_HealthSlider.value);
 			}
+		}
+
+		public Vector3 Position()
+		{
+			return transform.position;
 		}
 		/*private IEnumerator StartStun(int stun)
 		{

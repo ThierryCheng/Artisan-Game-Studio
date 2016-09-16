@@ -60,13 +60,18 @@ namespace AGS.Characters
 			}
 		}
 
+		protected void ChangeStamina(float value)
+		{
+			float ori = m_Stamina;
+			m_Stamina += value;
+			StaminaChanged(ori, m_Stamina);
+		}
+
 		protected override void UpdateStamina()
 		{
 			if(m_Stamina < m_MaxStamina)
 			{
-				float ori = m_Stamina;
-				m_Stamina += (m_FeededPoint / m_MaxFeededPoint) * 3f;
-				StaminaChanged(ori, m_Stamina);
+				ChangeStamina((m_FeededPoint / m_MaxFeededPoint) * 3f);
 				if(m_Stamina > m_MaxStamina)
 				{
 					m_Stamina = m_MaxStamina;
@@ -85,29 +90,14 @@ namespace AGS.Characters
 
 		protected override void ActionCallBack(string name)
 		{
-			//Debug.Log(name + "  111111");
-			/*if (name.Equals ("Attack 001") || name.Equals ("Attack 002") || name.Equals ("Attack 003")) 
-			{
-				if(TargetInRange(m_CanBeAttacked, m_CanBeAttackedRadius, m_ActionPerformedTarget))
-				{
-					//Debug.Log(name + "  111111");
-					AttackItem item = GameConstants.GetAttackItem("Violemon_" + name);
-					if(item != null)
-					{
-						item.KnockBackDirection = transform.TransformDirection(Vector3.forward);
-						BaseCharacter bc = m_ActionPerformedTarget.GetComponent<BaseCharacter>();
-						bc.Attacked(item);
-						if(m_ActionPerformedTarget == m_ActionTarget && bc.IsDead())
-						{
-							m_ActionTarget = null;
-							
-						}
-					}
-				}
-			}*/
 			m_ActionPerformedTarget.ActionCallBack (name);
+		}
 
-			//Debug.Log ("CallBack: " + name);
+		protected void ChangeMaxFeededPoint(float value)
+		{
+			float ori = m_MaxFeededPoint;
+			m_MaxFeededPoint += value;
+			MaxFeededPointChanged(ori, m_MaxFeededPoint);
 		}
 
 		protected void FeededPointChanged(float ori, float cur)
@@ -121,9 +111,20 @@ namespace AGS.Characters
 			}
 		}
 
+		protected void MaxFeededPointChanged(float ori, float cur)
+		{
+			foreach (BaseAttributeListener l in listeners)
+			{
+				if(l is PlayerAttributeListener)
+				{
+					((PlayerAttributeListener)l).OnMaxFeededPointChange(ori, cur);
+				}
+			}
+		}
+
 		public void Picked(Item item)
 		{
-			Debug.Log ("111 " + item);
+			//Debug.Log ("111 " + item);
 			ConsumeObj (item as Consumable);
 			foreach (BaseAttributeListener l in listeners)
 			{
@@ -139,8 +140,12 @@ namespace AGS.Characters
 			if (obj == null) {
 				throw new UnityException("Consumable is null!");
 			}
-			ChangeHealth (obj.m_Health);
-			ChangeFeededPoint (obj.m_FeededPoint);
+			ChangeHealth         (obj.m_Health);
+			ChangeMaxHealth      (obj.m_MaxHealth);
+			ChangeFeededPoint    (obj.m_FeededPoint);
+			ChangeMaxFeededPoint (obj.m_MaxFeededPoint);
+			ChangeStamina        (obj.m_Stamina);
+			ChangeMaxStamina     (obj.m_MaxStamina);
 		}
 
 		public void Pick(GameObject obj)
