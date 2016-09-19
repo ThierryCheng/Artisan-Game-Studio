@@ -46,6 +46,16 @@ namespace AGS.Config
 		public static float HumanKnight_TargetDirectionUpdateRate = 0f;
 		public static float HumanKnight_MoveSpeed = 4f;
 
+		public static float HumanArcher_InitialMaxHealth = 100f;
+		public static float HumanArcher_InitialMaxStamina = 100f;
+		public static float HumanArcher_AbleToAttack = 10f;
+		public static float HumanArcher_AbleToAttackRadius = 0.1f;
+		public static float HumanArcher_CanBeAttacked = 2.0f;
+		public static float HumanArcher_CanBeAttackedRadius = 0.6f;
+		public static float HumanArcher_TurnMultiplier = 1f;
+		public static float HumanArcher_TargetDirectionUpdateRate = 0f;
+		public static float HumanArcher_MoveSpeed = 5f;
+
 
 		private static AttackItem Violemon_Attack_001 = new AttackItem (20, 0f, 0f, 0f);
 		private static AttackItem Violemon_Attack_002 = new AttackItem (25, 0f, 0f, 0f);
