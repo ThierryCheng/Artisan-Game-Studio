@@ -93,6 +93,7 @@ namespace AGS.Cameras
         public virtual void SetTarget(Transform newTransform)
         {
             m_Target = newTransform;
+			transform.position = m_Target.position;
         }
 
 

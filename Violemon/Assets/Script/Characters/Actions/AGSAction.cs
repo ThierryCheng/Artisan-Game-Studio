@@ -17,5 +17,7 @@ namespace AGS.Characters
 		void ActionCallBack (string name);
 
 		void BeforeChangeTarget();
+
+		void SetActionTarget(GameObject tar);
 	}
 }

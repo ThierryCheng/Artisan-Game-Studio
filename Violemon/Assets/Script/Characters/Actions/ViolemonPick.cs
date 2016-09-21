@@ -13,7 +13,12 @@ namespace AGS.Characters
 		{
 			return m_ActionTarget;
 		}
-		
+
+		public void SetActionTarget(GameObject tar)
+		{
+			m_ActionTarget = tar;
+		}
+
 		public ViolemonPick(Player m_Player, GameObject m_ActionTarget)
 		{
 			this.m_Player        = m_Player;

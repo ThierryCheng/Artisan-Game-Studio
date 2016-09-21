@@ -3,13 +3,14 @@ using System.Collections;
 using AGS.Config;
 using AGS.Util;
 using AGS.Items;
+using AGS.Characters;
 
 namespace AGS.World
 {
 	public class WorldController : MonoBehaviour {
 		
 		private GameObject m_DirectionalLight;
-		private GameObject m_Violemon;
+		//private GameObject m_Violemon;
 		private Quaternion m_OriLightRotation = Quaternion.Euler (-60f, -180f, -0f);
 		private AGSTime    m_AGSTime;
 		private float      m_LastUpdateSunDirectionTime;
@@ -18,13 +19,13 @@ namespace AGS.World
 			//private Vector3    m_OriLightDir;
 			//private float      m_CurrentTime;
 			
-		public GameObject Violemon
-		{
-			get
-			{
-				return m_Violemon;
-			}
-		}
+		//public GameObject Violemon
+		//{
+		//	get
+		//	{
+		//		return m_Violemon;
+		//	}
+		//}
 
 		void Start () {
 			m_DirectionalLight = GameObject.Find ("Directional Light");
@@ -32,7 +33,7 @@ namespace AGS.World
 			{
 				return;
 			}
-			m_Violemon = GameObject.Find ("Violemon");
+			//m_Violemon = GameObject.Find ("Violemon");
 			if(m_DirectionalLight == null)
 			{
 				return;
@@ -54,7 +55,11 @@ namespace AGS.World
 				changeSkyboxEvent = new ChangeSkyboxEvent (m_OriSkybox);
 				m_AGSTime.AddFixedTimeEvent (6 * 60 * 60, changeSkyboxEvent);
 			}
+			AGSEvent enemyEvent = new RandomKnight ();
+			m_AGSTime.AddIntervalEvent (3f, enemyEvent);
+
 			ItemManager.Instance ().Init ();
+			CharacterManager.Instance ().Init ();
 		}
 		
 		// Update is called once per frame
@@ -88,6 +93,15 @@ namespace AGS.World
 			{
 				RenderSettings.skybox = m_PurpleNebula;
 
+			}
+		}
+
+		private class RandomKnight : AGSEvent{
+			
+			public void Exec()
+			{
+				CharacterManager.Instance ().GeneratCharacter (CharacterIDs.Character_HumanKnight);
+				
 			}
 		}
 	}

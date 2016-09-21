@@ -21,7 +21,11 @@ namespace AGS.Characters
 			this.m_ActionTarget  = m_ActionTarget;
 		}
 		
-		
+		public void SetActionTarget(GameObject tar)
+		{
+			m_ActionTarget = tar;
+		}
+
 		public void StartAction ()
 		{
 			m_BaseCharacter.Animator.SetBool("NormalAttack", true);
@@ -35,6 +39,8 @@ namespace AGS.Characters
 		
 		public bool CanStartAction ()
 		{
+			if (m_ActionTarget == null)
+				return false;
 			if (m_BaseCharacter.TargetInRange (m_BaseCharacter.m_AbleToAttack, m_BaseCharacter.m_AbleToAttackRadius, m_ActionTarget)) {
 				return true;
 			} else {
@@ -44,6 +50,8 @@ namespace AGS.Characters
 		
 		public void ActionCallBack (string name)
 		{
+			if (m_ActionTarget == null)
+				return;
 			if(m_BaseCharacter.TargetInRange(m_BaseCharacter.m_CanBeAttacked, m_BaseCharacter.m_CanBeAttackedRadius, m_ActionTarget))
 			{
 				AttackItem item = GameConstants.GetAttackItem("HumanKnight_" + name);

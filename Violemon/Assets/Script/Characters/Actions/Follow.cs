@@ -13,7 +13,12 @@ namespace AGS.Characters
 		{
 			return m_ActionTarget;
 		}
-		
+
+		public void SetActionTarget(GameObject tar)
+		{
+			m_ActionTarget = tar;
+		}
+
 		public Follow(BaseCharacter m_BaseCharacter, GameObject m_ActionTarget)
 		{
 			this.m_BaseCharacter = m_BaseCharacter;

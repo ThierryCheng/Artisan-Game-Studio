@@ -21,6 +21,10 @@ namespace AGS.Characters
 			this.m_ActionTarget  = m_ActionTarget;
 		}
 
+		public void SetActionTarget(GameObject tar)
+		{
+			m_ActionTarget = tar;
+		}
 
 		public void StartAction ()
 		{
