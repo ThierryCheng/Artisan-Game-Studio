@@ -17,6 +17,6 @@ namespace AGS.Characters
 
 		void OnDeviationChange(float ori, float cur);
 
-		void OnGainedObj(Item item);
+		void OnGainedObj(Items.Item item);
 	}
 }

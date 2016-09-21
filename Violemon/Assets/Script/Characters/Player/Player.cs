@@ -122,7 +122,7 @@ namespace AGS.Characters
 			}
 		}
 
-		public void Picked(Item item)
+		public void Picked(Items.Item item)
 		{
 			//Debug.Log ("111 " + item);
 			ConsumeObj (item as Consumable);
