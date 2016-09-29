@@ -56,7 +56,7 @@ namespace AGS.World
 				m_AGSTime.AddFixedTimeEvent (6 * 60 * 60, changeSkyboxEvent);
 			}
 			AGSEvent enemyEvent = new RandomKnight ();
-			m_AGSTime.AddIntervalEvent (3f, enemyEvent);
+			m_AGSTime.AddIntervalEvent (9f, enemyEvent);
 
 			ItemManager.Instance ().Init ();
 			CharacterManager.Instance ().Init ();

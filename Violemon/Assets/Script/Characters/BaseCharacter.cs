@@ -482,6 +482,9 @@ namespace AGS.Characters
 		{
 			float ori = m_Health;
 			m_Health += value;
+			if (m_Health > m_MaxHealth) {
+				m_Health = m_MaxHealth;
+			}
 			HealthChanged (ori, m_Health);
 			ShowHealthBar ();
 		}

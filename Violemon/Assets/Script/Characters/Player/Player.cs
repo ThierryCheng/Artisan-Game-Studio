@@ -44,6 +44,9 @@ namespace AGS.Characters
 		{
 			float ori = m_FeededPoint;
 			m_FeededPoint += value;
+			if (m_FeededPoint > m_MaxFeededPoint) {
+				m_FeededPoint = m_MaxFeededPoint;
+			}
 			FeededPointChanged(ori, m_FeededPoint);
 		}
 
@@ -64,6 +67,9 @@ namespace AGS.Characters
 		{
 			float ori = m_Stamina;
 			m_Stamina += value;
+			if (m_Stamina > m_MaxStamina) {
+				m_Stamina = m_MaxStamina;
+			}
 			StaminaChanged(ori, m_Stamina);
 		}
 
