@@ -116,7 +116,7 @@ namespace AGS.Editor
 					quat = Quaternion.LookRotation(Vector3.forward, Vector3.up);  
 					Handles.ArrowCap(0, pos, quat, arrowSize);  
 					//Handles.DrawLine(pos + new Vector3(0, 3, 0), pos);  
-					if (e.isKey && e.character == 'a') {
+					if (e.isKey && e.character == 'z') {
 						Debug.Log (e.button + "  :  " + e.clickCount);
 						//GameObject obj = (GameObject)Instantiate(t);
 						//obj.transform.position = _hitInfo.point;
@@ -128,10 +128,14 @@ namespace AGS.Editor
 						//		obj = (GameObject)EditorUtility.InstantiatePrefab(prefab);
 						//		obj.transform.position = _hitInfo.point;
 						//	}
-						SpawnOne (_hitInfo.point, 0f);
+						SpawnOne (_hitInfo.point, 0f, 0f);
 						//Debug.Log (Event.current.button + "  :  " + Event.current.delta.x + "  :  " + Event.current.delta.y);
+					} else if (e.isKey && e.character == 'a') {
+						RandomSpawn (_hitInfo.point, 0f);
 					} else if (e.isKey && e.character == 'b') {
-						RandomSpawn(_hitInfo.point);
+						MultipleSpawn (_hitInfo.point, 0f);
+					} else if (e.isKey && e.character == 'c') {
+						RandomSpawn (_hitInfo.point, 0.5f);
 					}
 				}  
 			}  
@@ -141,7 +145,7 @@ namespace AGS.Editor
 			SceneView.RepaintAll();  
 		}
 
-		private void SpawnOne(Vector3 position, float rotation)
+		private bool SpawnOne(Vector3 position, float rotation, float height)
 		{
 			
 			GameObject obj;
@@ -155,25 +159,46 @@ namespace AGS.Editor
 			} else {
 				throw new UnityException ("Selected prefabe has no collider!");
 			}
-			Vector3 v = new Vector3 (position.x , position.y + 5, position.z);
+			Vector3 v = new Vector3 (position.x , position.y + 50, position.z);
 
 			if (Physics.SphereCast (v, redius, Vector3.down,out _hitInfo,100f)) {
 				float dot = Vector3.Dot (_hitInfo.normal, Vector3.up);
 				if (_hitInfo.collider.gameObject.tag.Equals ("Land") && dot >= 0.9f) {
 					Undo.IncrementCurrentGroup();
 					obj = (GameObject)EditorUtility.InstantiatePrefab(t);
-					obj.transform.position = position;
+					obj.transform.position = new Vector3(_hitInfo.point.x, _hitInfo.point.y + height, _hitInfo.point.z);
 					obj.transform.Rotate (0, rotation, 0);
 					Undo.RegisterCreatedObjectUndo(obj, "Create " + obj.name);
+					return true;
 				}
 			}
+			return false;
 		}
 
-		private void RandomSpawn(Vector3 position)
+		private bool RandomSpawn(Vector3 position, float height)
 		{
 			float random = Random.value;
 			float rotation = Mathf.Lerp (0f, 360f, random);
-			SpawnOne (position, rotation);
+			return SpawnOne (position, rotation, height);
+		}
+
+		private void MultipleSpawn(Vector3 position, float height)
+		{
+			float rx, rz, dis;
+			Vector3 angle;
+			bool re;
+			for (int i = 0; i < 10; i++) {
+				for (int j = 0; j < 3; j++) {
+					rx = Random.value * 2f - 1f;
+					rz = Random.value * 2f - 1f;
+					dis = Random.value * 10f;
+					angle = new Vector3 (rx, 0f ,rz).normalized;
+					re = RandomSpawn (position + angle * dis, height);
+					if (re) {
+						break;
+					}
+				}
+			}
 		}
 	}
 }
