@@ -3,7 +3,7 @@ using UnityEditor;
 using System.Collections;
 using AGS.Spawn;
 
-namespace AGS.Editor
+namespace AGS.Editors
 {
 	public class SpawnPointDistributor : EditorWindow {
 		RaycastHit _hitInfo;  

@@ -3,7 +3,7 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace AGS.Editor
+namespace AGS.Editors
 {
 	public class SpawnObjs{
 		public string[][] m_ObjsMap;
