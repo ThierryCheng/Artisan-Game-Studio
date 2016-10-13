@@ -10,6 +10,7 @@ namespace AGS.Editor
 		SceneView.OnSceneFunc _delegate;  
 		static SpawnPointDistributor _windowInstance;  
 		GameObject t;
+		GameObject quad;
 		string myString = "Hello World";
 		//string[] radioNames;// = new string[]{"Apple", "Violemon", "HumanKnight"};
 		bool[] radioStates;// = new bool[]{false, false, false};
@@ -32,7 +33,11 @@ namespace AGS.Editor
 			//Debug.Log ("Load Resources");
 			//t = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Resources/Prefabs/Items/Apple", typeof(GameObject));
 			//t = (GameObject)Resources.Load ("Prefabs/Items/Apple");
-
+			GameObject oriQuad = (GameObject)Resources.Load ("Prefabs/World/Quad");
+			quad = (GameObject)EditorUtility.InstantiatePrefab(oriQuad);
+			quad.transform.position = new Vector3 (0, -5, 0);
+			Debug.Log ("Generated quad");
+			SpawnObjs.Instance ().LoadObjs ();
 			radioStates = new bool[SpawnObjs.Instance().m_ObjsMap.Length];
 		}
 
@@ -53,6 +58,11 @@ namespace AGS.Editor
 				Debug.Log("OnDestroyed"); 
 				SceneView.onSceneGUIDelegate -= _delegate;  
 			}  
+
+			if (quad != null) {
+				Debug.Log ("Destroied quad");
+				GameObject.DestroyImmediate (quad);
+			}
 		}  
 
 
@@ -63,7 +73,7 @@ namespace AGS.Editor
 			GUILayout.Label ("Base Settings", EditorStyles.boldLabel);
 
 			for (int i = 0; i < SpawnObjs.Instance().m_ObjsMap.Length; i++) {
-				if (radioStates [i] != EditorGUILayout.Toggle (SpawnObjs.Instance().m_ObjsMap [i][1], radioStates [i])) {
+				if (radioStates [i] != EditorGUILayout.Toggle (SpawnObjs.Instance().m_ObjsMap [i][0], radioStates [i])) {
 					radioStates [i] = !radioStates [i];//改变选择状态
 					t = SpawnObjs.Instance().m_GameObjs[i];
 					if (radioInt != i)
@@ -93,52 +103,68 @@ namespace AGS.Editor
 
 
 			//if (e.isKey && e.character == 'a')
-			if (Physics.Raycast(ray, out _hitInfo, 10000, -1))  
+			if (Physics.Raycast(ray, out _hitInfo, 100000, -1))  
 			{  
 				//Debug.DrawRay(ray.origin, ray.direction, Color.yellow);  
 				Vector3 origin = _hitInfo.point;  
 				origin.y += 100;  
 				if (Physics.Raycast(origin, Vector3.down, out _hitInfo))  
 				{  
-					Handles.color = Color.yellow;  
-					Handles.DrawLine(_hitInfo.point, origin);  
+					if (_hitInfo.collider.gameObject.tag.Equals ("Land")) 
+					{
+						Handles.color = Color.yellow;  
+						Handles.DrawLine (_hitInfo.point, origin);  
 
-					float arrowSize = 1;  
-					Vector3 pos = _hitInfo.point;  
-					Quaternion quat;  
-					Handles.color = Color.green;  
-					quat = Quaternion.LookRotation(Vector3.up, Vector3.up);  
-					Handles.ArrowCap(0, pos, quat, arrowSize);  
-					Handles.color = Color.red;  
-					quat = Quaternion.LookRotation(Vector3.right, Vector3.up);  
-					Handles.ArrowCap(0, pos, quat, arrowSize);  
-					Handles.color = Color.blue;  
-					quat = Quaternion.LookRotation(Vector3.forward, Vector3.up);  
-					Handles.ArrowCap(0, pos, quat, arrowSize);  
-					//Handles.DrawLine(pos + new Vector3(0, 3, 0), pos);  
-					if (e.isKey && e.character == 'z') {
-						Debug.Log (e.button + "  :  " + e.clickCount);
-						//GameObject obj = (GameObject)Instantiate(t);
-						//obj.transform.position = _hitInfo.point;
-						//Object prefab = EditorUtility.GetPrefabParent(t);
-						//Debug.Log ("is prefab: " + prefab);
-						//if(prefab)
-						//{
-						//	GameObject obj;
-						//		obj = (GameObject)EditorUtility.InstantiatePrefab(prefab);
-						//		obj.transform.position = _hitInfo.point;
-						//	}
-						SpawnOne (_hitInfo.point, 0f, 0f);
-						//Debug.Log (Event.current.button + "  :  " + Event.current.delta.x + "  :  " + Event.current.delta.y);
-					} else if (e.isKey && e.character == 'a') {
-						RandomSpawn (_hitInfo.point, 0f);
-					} else if (e.isKey && e.character == 'b') {
-						MultipleSpawn (_hitInfo.point, 0f);
-					} else if (e.isKey && e.character == 'c') {
-						RandomSpawn (_hitInfo.point, 0.5f);
+						float arrowSize = 1;  
+						Vector3 pos = _hitInfo.point;  
+						Quaternion quat;  
+						Handles.color = Color.green;  
+						quat = Quaternion.LookRotation (Vector3.up, Vector3.up);  
+						Handles.ArrowCap (0, pos, quat, arrowSize);  
+						Handles.color = Color.red;  
+						quat = Quaternion.LookRotation (Vector3.right, Vector3.up);  
+						Handles.ArrowCap (0, pos, quat, arrowSize);  
+						Handles.color = Color.blue;  
+						quat = Quaternion.LookRotation (Vector3.forward, Vector3.up);  
+						Handles.ArrowCap (0, pos, quat, arrowSize);  
+						//Handles.DrawLine(pos + new Vector3(0, 3, 0), pos);  
+						if (e.isKey && e.character == 'z') {
+							Debug.Log (e.button + "  :  " + e.clickCount);
+							//GameObject obj = (GameObject)Instantiate(t);
+							//obj.transform.position = _hitInfo.point;
+							//Object prefab = EditorUtility.GetPrefabParent(t);
+							//Debug.Log ("is prefab: " + prefab);
+							//if(prefab)
+							//{
+							//	GameObject obj;
+							//		obj = (GameObject)EditorUtility.InstantiatePrefab(prefab);
+							//		obj.transform.position = _hitInfo.point;
+							//	}
+							SpawnOne (_hitInfo.point, 0f, 0f);
+							//Debug.Log (Event.current.button + "  :  " + Event.current.delta.x + "  :  " + Event.current.delta.y);
+						} else if (e.isKey && e.character == 'a') {
+							RandomSpawn (_hitInfo.point, 0f);
+						} else if (e.isKey && e.character == 'b') {
+							MultipleSpawn (_hitInfo.point, 0f);
+						} else if (e.isKey && e.character == 'c') {
+							RandomSpawn (_hitInfo.point, 0.5f);
+						}
+
+
 					}
 				}  
-			}  
+			}
+
+			if (e.isKey && e.character == 'd') {
+				if(Physics.Raycast(ray, out _hitInfo, 100000, -1))
+				{
+					//Debug.Log ("11111111");
+					if (_hitInfo.collider.gameObject.tag == "Quad") {
+						//Debug.Log ("2222222");
+						RandomSpawnLand (_hitInfo.point, 0f);
+					}
+				}
+			}
 			//if (e.isMouse && e.button != 0) {
 
 			//Debug.Log (Event.current.button + "  :  " + Event.current.delta.x + "  :  " + Event.current.delta.y);
@@ -181,6 +207,24 @@ namespace AGS.Editor
 			float rotation = Mathf.Lerp (0f, 360f, random);
 			return SpawnOne (position, rotation, height);
 		}
+
+		private bool RandomSpawnLand(Vector3 position, float height)
+		{
+			float random = Random.value;
+			float rotation = Mathf.Lerp (0f, 360f, random);
+			return SpawnOneLand (position, rotation, height);
+		}
+
+		private bool SpawnOneLand(Vector3 position, float rotation, float height)
+		{
+			GameObject obj;
+			Undo.IncrementCurrentGroup();
+			obj = (GameObject)EditorUtility.InstantiatePrefab(t);
+			obj.transform.position = new Vector3(_hitInfo.point.x, _hitInfo.point.y + height, _hitInfo.point.z);
+			obj.transform.Rotate (0, rotation, 0);
+		    Undo.RegisterCreatedObjectUndo(obj, "Create " + obj.name);
+			return true;
+	    }
 
 		private void MultipleSpawn(Vector3 position, float height)
 		{

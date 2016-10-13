@@ -22,14 +22,16 @@ namespace AGS.Editor
 			m_ObjsMap = new string[][] {
 				new string[]{"Apple", "Prefabs/Items/Apple"},
 				new string[]{"Violemon", "Prefabs/Characters/Violemon/Violemon"},
-				new string[]{"Human Knight", "Prefabs/Characters/Human/HumanKnight/HumanKnight"}
+				new string[]{"Human Knight", "Prefabs/Characters/Human/HumanKnight/HumanKnight"},
+				new string[]{"Wasted Land", "Prefabs/Scene Model/Wasteland_Plate"},
+				new string[]{"Greenland", "Prefabs/Scene Model/Greenland"}
 			};
 
 
-			LoadObjs ();
+			//LoadObjs ();
 		}
 
-		private void LoadObjs()
+		public void LoadObjs()
 		{
 			m_GameObjs = new GameObject[m_ObjsMap.Length];
 			for (int i = 0; i < m_ObjsMap.Length; i++) {

@@ -63,8 +63,8 @@ namespace AGS.Cameras
         {
             if (m_Target == null) return;
             // Move the rig towards target position.
-            transform.position = Vector3.Lerp(transform.position, m_Target.position, deltaTime*m_MoveSpeed);
-			//transform.position = m_Target.position;
+            //transform.position = Vector3.Lerp(transform.position, m_Target.position, deltaTime*m_MoveSpeed);
+			transform.position = m_Target.position;
         }
 
 
