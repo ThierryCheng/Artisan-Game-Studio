@@ -24,7 +24,14 @@ namespace AGS.Editors
 				new string[]{"Violemon", "Prefabs/Characters/Violemon/Violemon"},
 				new string[]{"Human Knight", "Prefabs/Characters/Human/HumanKnight/HumanKnight"},
 				new string[]{"Wasted Land", "Prefabs/Scene Model/Wasteland_Plate"},
-				new string[]{"Greenland", "Prefabs/Scene Model/Greenland"}
+				new string[]{"Greenland", "Prefabs/Scene Model/Greenland"},
+				new string[]{"Forest_Tile_1", "Prefabs/Tile/Forest_Tile_1"},
+				new string[]{"Frozen_Tile_1", "Prefabs/Tile/Frozen_Tile_1"},
+				new string[]{"Frozen_Tile_2", "Prefabs/Tile/Frozen_Tile_2"},
+				new string[]{"Frozen_Tile_3", "Prefabs/Tile/Frozen_Tile_3"},
+				new string[]{"Grass", "Prefabs/Scene Model/Grassland/Grass"},
+				new string[]{"Camel thorn", "Prefabs/Scene Model/Wasteland/Camel thorn"},
+				new string[]{"WitheredTree", "Prefabs/Scene Model/Wasteland/WitheredTree"}
 			};
 
 

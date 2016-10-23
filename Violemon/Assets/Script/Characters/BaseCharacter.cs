@@ -137,7 +137,9 @@ namespace AGS.Characters
 		{
 			if (m_MoveTarget != Vector3.zero) {
 				m_Animator.SetBool("HasTarget", false);
-				if (Vector3.Distance (transform.position, m_MoveTarget) > 0.2f) {
+				Vector3 mf = new Vector3 (transform.position.x, 0, transform.position.z);
+				Vector3 tf = new Vector3 (m_MoveTarget.x, 0, m_MoveTarget.z);
+				if (Vector3.Distance (mf, tf) > 0.2f) {
 					m_MoveDirection = m_MoveTarget - transform.position;
 					m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
 					m_Animator.SetBool ("Run", true);

@@ -94,19 +94,25 @@ namespace AGS.Characters
 		private void GetMouseScreenPointToRayHitPosition()
 		{
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			RaycastHit hitInfo;
-			if (Physics.Raycast (ray, out hitInfo, 100, LayerManager.Instance().GetGroundLayerIndex())) {
-				//Debug.Log ("111");
-				m_TargetPosition = hitInfo.point;
-
+			m_TargetPosition = Vector3.zero;
+			//RaycastHit hitInfo;
+			RaycastHit[] hits = Physics.RaycastAll (ray, 500);
+			foreach (RaycastHit hit in hits) {
+				if (IsLandTag (hit.collider.transform.tag)) {
+					m_TargetPosition = hit.point;
+					break;
+				} 
 			}
-			else
-			{
-				m_TargetPosition = Vector3.zero;
+		}
 
+		private bool IsLandTag(string tagName)
+		{
+			if (tagName.Equals ("Forestland") || tagName.Equals ("Frozenland") || tagName.Equals ("Grassland") || tagName.Equals ("Swampland") || tagName.Equals ("Wasteland")) {
+				return true;
+			} else {
+				return false;
 			}
-
-	    }
+		}
 
 		private void GetMouseScreenPointToRayHitTarget()
 		{
