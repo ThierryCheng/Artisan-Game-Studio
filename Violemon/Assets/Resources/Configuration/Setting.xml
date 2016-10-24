@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SeetingRoot>
+  <!-- 系统语言默认英文ENG，{CHN,ENG}-->
+  <Language>
+	"Default"
+  </Language>
+  <!-- 北京音乐音量，0-100 -->
+  <BackgroundVolume>
+	100
+  </BackgroundVolume>
+  <!-- 系统音效，{0-100} -->
+  <SoundEffect>
+	100
+  </SoundEffect>
+  <!-- 游戏分辨率{2K,1080p,720p,480p},默认480p-->
+  <Resolution>
+	"Default"
+  </Resolution>
+  <!-- 窗口化游戏,{Yes, No}默认yes -->
+  <WindowMode>
+	"Yes"
+  </WindowMode>
+</SeetingRoot>
