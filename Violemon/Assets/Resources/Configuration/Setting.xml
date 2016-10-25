@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <SeetingRoot>
-  <!-- 系统语言默认英文ENG，{Chinese,English}-->
+  <!-- 系统语言默认英文，{Chinese,English}-->
   <Language value="English" />
-  <!-- 北京音乐音量，0-100 -->
+  <!-- 背景音乐音量，0-100 -->
   <BackgroundVolume value="100"/>
-  <!-- 系统音效，{0-100} -->
+  <!-- 系统音效音量，{0-100} -->
   <EffectSound value="100"/>
   <!-- 游戏分辨率{2K,1080p,720p,480p},默认480p-->
   <Resolution value="480p"/>
