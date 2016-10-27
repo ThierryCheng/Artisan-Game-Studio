@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using AGS.Config;
 using UnityEngine.UI;
 using AGS.UI;
+using AGS.World;
 
 namespace AGS.Characters
 {
 	[RequireComponent(typeof(Rigidbody))]
 	[RequireComponent(typeof(CapsuleCollider))]
 	[RequireComponent(typeof(Animator))]
-	public abstract class BaseCharacter : MonoBehaviour
+	public abstract class BaseCharacter : AGS.World.OutLine
 	{
 		protected List<BaseAttributeListener> listeners = new List<BaseAttributeListener> ();
 		protected float m_MovingTurnSpeed = 360;
@@ -71,6 +72,7 @@ namespace AGS.Characters
 
 		protected void Start()
 		{
+			base.Start();
 			m_Animator = GetComponent<Animator>();
 			m_Rigidbody = GetComponent<Rigidbody>();
 			m_Capsule = GetComponent<CapsuleCollider>();

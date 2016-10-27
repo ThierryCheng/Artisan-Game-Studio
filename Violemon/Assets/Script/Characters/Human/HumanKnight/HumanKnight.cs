@@ -22,6 +22,9 @@ namespace AGS.Characters
 			m_TargetDirectionUpdateRate = GameConstants.HumanKnight_TargetDirectionUpdateRate;
 			m_TurnMultiplier            = GameConstants.HumanKnight_TurnMultiplier;
 			m_MoveSpeed                 = GameConstants.HumanKnight_MoveSpeed;
+
+			this.m_OutLineMat = (Material)Resources.Load ("ProgrammedMaterials/Characters/HumanKnight/HumanKnightOutLine");
+			this.m_UseOutLine = true;
 		}
 		
 		protected override void ActionCallBack(string name)
