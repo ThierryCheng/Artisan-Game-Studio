@@ -11,6 +11,7 @@ namespace AGS.Characters
 			base.Start ();
 			//m_MoveTarget = new Vector3 (1000, 0, 1000);
 			gameObject.tag = TagManager.HUMAN;
+			this.m_UseOutLine = true;
 			//m_HitPoints = 200;
 			//gameObject.layer = "Human";
 

@@ -5,23 +5,30 @@ namespace AGS.World
 {
 	public class OutLine : MonoBehaviour {
 		private Renderer renderer;
-		private Material m_NormalMat;
-		protected Material  m_OutLineMat;
 		protected bool m_UseOutLine = false;
-		// Use this for initialization
+		private static Shader m_OutLineShader;
+		private Shader m_OriShader;
+		protected Color m_OutLineColor;
 
 		void OnMouseEnter()
 		{
-			if (m_UseOutLine == true && m_OutLineMat != null && renderer != null) {
-				renderer.material = m_OutLineMat;
+			if (m_UseOutLine == true && m_OutLineShader != null && renderer != null) {
+				renderer.material.shader = m_OutLineShader;
+				renderer.material.SetColor("_OutlineColor", m_OutLineColor);
+				renderer.material.SetColor("_Color", Color.white);
 			}
 		}
 
 		protected void Start()
 		{
+			if (m_OutLineShader == null) {
+				m_OutLineShader = (Shader)Resources.Load ("Shaders/OutLine");
+			}
+
 			renderer = gameObject.GetComponentInChildren<Renderer> ();
+			m_OutLineColor = Color.red;
 			if (renderer != null) {
-				m_NormalMat = renderer.material;
+				m_OriShader = renderer.material.shader;
 			}
 		}
 
@@ -33,7 +40,7 @@ namespace AGS.World
 		void OnMouseExit()
 		{
 			if (m_UseOutLine == true) {
-				renderer.material = m_NormalMat;
+				renderer.material.shader = m_OriShader;
 			}
 		}
 	}

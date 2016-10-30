@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using AGS.Characters;
+using AGS.World;
+
 namespace AGS.Items
 {
-	public class ItemController : MonoBehaviour {
+	public class ItemController : OutLine {
 
 		private GameObject m_Violemon;
 		private Item m_ItemInfo;
@@ -21,6 +23,9 @@ namespace AGS.Items
 
 		// Use this for initialization
 		void Start () {
+			base.Start ();
+			this.m_UseOutLine = true;
+			this.m_OutLineColor = Color.white;
 			m_Violemon = GameObject.Find ("Violemon");
 		}
 		

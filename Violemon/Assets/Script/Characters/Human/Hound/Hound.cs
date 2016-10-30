@@ -21,6 +21,7 @@ namespace AGS.Characters
 			m_TargetDirectionUpdateRate = GameConstants.Hound_TargetDirectionUpdateRate;
 			m_TurnMultiplier            = GameConstants.Hound_TurnMultiplier;
 			m_MoveSpeed                 = GameConstants.Hound_MoveSpeed;
+
 		}
 
 
