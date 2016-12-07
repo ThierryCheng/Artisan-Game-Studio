@@ -164,5 +164,76 @@ namespace AGS.Characters
 		{
 			//Debug.Log ("Called in Player");
 		}
+
+		protected override void FollowTarget()
+		{
+			if (m_MoveTarget != Vector3.zero) {
+				m_Animator.SetBool("HasTarget", false);
+				Vector3 mf = new Vector3 (transform.position.x, 0, transform.position.z);
+				Vector3 tf = new Vector3 (m_MoveTarget.x, 0, m_MoveTarget.z);
+				if (Vector3.Distance (mf, tf) > 0.2f) {
+					m_MoveDirection = m_MoveTarget - transform.position;
+					m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
+
+					m_Animator.SetBool ("Run", true);
+
+				} else {
+					m_MoveTarget = Vector3.zero;
+					m_Animator.SetBool ("Run", false);
+				}
+			}
+			else if(m_ActionTarget != null)
+			{
+				BaseCharacter baseCharacter = m_ActionTarget.TargetObj().GetComponent<BaseCharacter>();
+				if(baseCharacter != null && baseCharacter.IsDead())
+				{
+					m_ActionTarget = null;
+					m_Animator.SetBool("HasTarget", false);
+				}
+				else
+				{
+					m_Animator.SetBool("HasTarget", true);
+					UpdateDirection();
+					if(!m_ActionTarget.CanStartAction())
+					{
+
+						m_Animator.SetBool ("Run", true);
+						m_ActionTarget.StopAction();
+					}
+					else
+					{
+						m_ActionTarget.StartAction();
+						m_Animator.SetBool ("Run", false);
+						m_ActionPerformedTarget = m_ActionTarget;
+
+					}
+				}
+			}
+			else 
+			{
+				m_Animator.SetBool("HasTarget", false);
+				m_Animator.SetBool("Run", false);
+			}
+
+			if(m_Animator.GetBool("Run") == true && !IsDead() && !m_BlockMove)
+			{
+				Move (m_MoveDirection);
+			}
+		}
+
+		private void UpdateDirection()
+		{
+			if(m_TargetDirectionUpdateRate <= 0f)
+			{
+				m_MoveDirection = m_ActionTarget.TargetObj().transform.position - transform.position;
+				m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
+			}
+			else if((Time.time - m_LastDirectionUpdateTime) >= m_TargetDirectionUpdateRate)
+			{
+				m_MoveDirection = m_ActionTarget.TargetObj().transform.position - transform.position;
+				m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
+				m_LastDirectionUpdateTime = Time.time;
+			}
+		}
 	}
 }

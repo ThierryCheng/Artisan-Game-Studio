@@ -7,25 +7,17 @@ using AGS.Characters;
 
 namespace AGS.World
 {
+	[RequireComponent(typeof(AGSTime))]
+	[RequireComponent(typeof(RuntimeMgr))]
 	public class WorldController : MonoBehaviour {
 		
 		private GameObject m_DirectionalLight;
-		//private GameObject m_Violemon;
 		private Quaternion m_OriLightRotation = Quaternion.Euler (-60f, -180f, -0f);
 		private AGSTime    m_AGSTime;
+		private RuntimeMgr m_RuntimeMgr;
 		private float      m_LastUpdateSunDirectionTime;
 		public  Material   m_PurpleNebula;
 		private Material   m_OriSkybox;
-			//private Vector3    m_OriLightDir;
-			//private float      m_CurrentTime;
-			
-		//public GameObject Violemon
-		//{
-		//	get
-		//	{
-		//		return m_Violemon;
-		//	}
-		//}
 
 		void Start () {
 			m_DirectionalLight = GameObject.Find ("Directional Light");
@@ -41,6 +33,7 @@ namespace AGS.World
 			//m_DirectionalLight.transform.LookAt (m_Violemon.transform.position);
 			//m_DirectionalLight.transform.rotation = m_OriLightRotation;
 			m_AGSTime = gameObject.GetComponent<AGSTime> ();
+			m_RuntimeMgr = gameObject.GetComponent<RuntimeMgr> ();
 			//m_OriLightDir = m_DirectionalLight.transform.TransformDirection (Vector3.forward);
 			//m_CurrentTime = 6 * 60 * 60;
 			//m_PurpleNebula = Resources.Load("Test/Skyboxes/PurpleNebula/PurpleNebula") as Material;
@@ -55,11 +48,9 @@ namespace AGS.World
 				changeSkyboxEvent = new ChangeSkyboxEvent (m_OriSkybox);
 				m_AGSTime.AddFixedTimeEvent (6 * 60 * 60, changeSkyboxEvent);
 			}
-			//AGSEvent enemyEvent = new RandomKnight ();
-			//m_AGSTime.AddIntervalEvent (9f, enemyEvent);
 
 			ItemManager.Instance ().Init ();
-			CharacterManager.Instance ().Init ();
+			CharacterMetaDataMgr.Instance ().Init ();
 		}
 		
 		// Update is called once per frame
@@ -93,15 +84,6 @@ namespace AGS.World
 			{
 				RenderSettings.skybox = m_PurpleNebula;
 
-			}
-		}
-
-		private class RandomKnight : AGSEvent{
-			
-			public void Exec()
-			{
-				CharacterManager.Instance ().GeneratCharacter (CharacterIDs.Character_HumanKnight);
-				
 			}
 		}
 	}

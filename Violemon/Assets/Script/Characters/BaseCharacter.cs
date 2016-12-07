@@ -18,7 +18,7 @@ namespace AGS.Characters
 		protected float m_StationaryTurnSpeed = 180;
 		protected float m_GroundCheckDistance = 0.3f;
 
-		
+		//protected NavMeshAgent    m_Agent;
 		protected Rigidbody       m_Rigidbody;
 		//Animator  m_Animator;
 		protected float           m_TurnAmount;
@@ -61,6 +61,8 @@ namespace AGS.Characters
 		public    Canvas          m_HealthCanvas;
 		private   Slider          m_HealthSlider;
 		private   HealthBar       barClass;
+		private   float           pn = 0f;
+		private   NavMeshPath path;
 		//Text m_text;
 		public    Animator        Animator
 		{
@@ -73,6 +75,15 @@ namespace AGS.Characters
 		protected void Start()
 		{
 			base.Start();
+			/*Debug.Log ("1:30  " + Mathf.Atan2(0.5f, 0.5f));
+			Debug.Log ("3:00  " + Mathf.Atan2(1f, 0f));
+			Debug.Log ("4:30  " + Mathf.Atan2(0.5f, -0.5f));
+			Debug.Log ("6:00  " + Mathf.Atan2(0f, -1f));
+			Debug.Log ("7:30  " + Mathf.Atan2(-0.5f, -0.5f));
+			Debug.Log ("9:00  " + Mathf.Atan2(-1f, 0f));
+			Debug.Log ("10:30 " + Mathf.Atan2(-0.5f, 0.5f));
+			Debug.Log ("12:00 " + Mathf.Atan2(0f, 1f));*/
+
 			m_Animator = GetComponent<Animator>();
 			m_Rigidbody = GetComponent<Rigidbody>();
 			m_Capsule = GetComponent<CapsuleCollider>();
@@ -90,6 +101,10 @@ namespace AGS.Characters
 			m_TargetDirectionUpdateRate = 0f;
 			m_LastDirectionUpdateTime = 0f;
 			m_TurnMultiplier = 1f;
+			//m_Agent = GetComponentInChildren<NavMeshAgent>();
+			//m_Agent.enabled = false;
+
+			//path = new NavMeshPath();
 		}
 
 		public void BlockMove(bool block)
@@ -135,7 +150,7 @@ namespace AGS.Characters
 			return false;
 		}
 
-		private void FollowTarget()
+		protected virtual void FollowTarget()
 		{
 			if (m_MoveTarget != Vector3.zero) {
 				m_Animator.SetBool("HasTarget", false);
@@ -190,6 +205,78 @@ namespace AGS.Characters
 			}
 		}
 
+		/*protected virtual void FollowTarget()
+		{
+			if (m_MoveTarget != Vector3.zero) {
+				m_Animator.SetBool("HasTarget", false);
+				Vector3 mf = new Vector3 (transform.position.x, 0, transform.position.z);
+				Vector3 tf = new Vector3 (m_MoveTarget.x, 0, m_MoveTarget.z);
+				if (Vector3.Distance (mf, tf) > 0.2f) {
+					// If agent is null, control movement by my script
+					if (m_Agent.enabled == false) {
+						m_MoveDirection = m_MoveTarget - transform.position;
+						m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
+					} else {
+						m_Agent.SetDestination (m_MoveTarget);
+					}
+					//NavMeshPath path = new NavMeshPath();
+					//m_Agent.CalculatePath(m_MoveTarget, path);
+					//foreach (Vector3 c in path.corners) {
+						//Gizmos.DrawSphere (c, 0.5f);
+					//	Debug.DrawRay(c, Vector3.up * 3, Color.green, 1f);
+					//}
+					//m_MoveDirection = path.corners [0] - transform.position;
+					//m_MoveDirection = m_Agent.desiredVelocity;
+					//NavMeshPath path = new NavMeshPath();
+					//m_Agent.CalculatePath(transform.position, path);
+					//m_MoveDirection = path.corners [0] - transform.position;
+
+					m_Animator.SetBool ("Run", true);
+
+				} else {
+					m_MoveTarget = Vector3.zero;
+					m_Animator.SetBool ("Run", false);
+				}
+			}
+			else if(m_ActionTarget != null)
+			{
+				BaseCharacter baseCharacter = m_ActionTarget.TargetObj().GetComponent<BaseCharacter>();
+				if(baseCharacter != null && baseCharacter.IsDead())
+				{
+					m_ActionTarget = null;
+					m_Animator.SetBool("HasTarget", false);
+				}
+				else
+				{
+					m_Animator.SetBool("HasTarget", true);
+					UpdateDirection();
+					if(!m_ActionTarget.CanStartAction())
+					{
+
+						m_Animator.SetBool ("Run", true);
+						m_ActionTarget.StopAction();
+					}
+					else
+					{
+						m_ActionTarget.StartAction();
+						m_Animator.SetBool ("Run", false);
+						m_ActionPerformedTarget = m_ActionTarget;
+
+					}
+				}
+			}
+			else 
+			{
+				m_Animator.SetBool("HasTarget", false);
+				m_Animator.SetBool("Run", false);
+			}
+
+			if(m_Animator.GetBool("Run") == true && !IsDead() && !m_BlockMove && m_Agent.enabled == false)
+			{
+				Move (m_MoveDirection);
+			}
+		}*/
+
 		public bool IsActionTargetTheSame()
 		{
 			if (m_ActionTarget != null && m_ActionPerformedTarget != null && m_ActionTarget == m_ActionPerformedTarget) {
@@ -218,6 +305,32 @@ namespace AGS.Characters
 				m_LastDirectionUpdateTime = Time.time;
 			}
 		}
+
+		/*private void UpdateDirection()
+		{
+			if(m_TargetDirectionUpdateRate <= 0f)
+			{
+				if (m_Agent.enabled == false) {
+					m_MoveDirection = m_ActionTarget.TargetObj().transform.position - transform.position;
+					m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
+				} else {
+					m_Agent.SetDestination (m_ActionTarget.TargetObj().transform.position);
+				}
+					
+				//m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
+			}
+			else if((Time.time - m_LastDirectionUpdateTime) >= m_TargetDirectionUpdateRate)
+			{
+				if (m_Agent.enabled == false) {
+					m_MoveDirection = m_ActionTarget.TargetObj().transform.position - transform.position;
+					m_MoveDirection = Vector3.Scale (m_MoveDirection, m_VectorMask).normalized;
+				} else {
+					m_Agent.SetDestination (m_ActionTarget.TargetObj().transform.position);
+				}
+
+				m_LastDirectionUpdateTime = Time.time;
+			}
+		}*/
 
 		public void AddAttributeListener(BaseAttributeListener listener)
 		{
@@ -349,6 +462,7 @@ namespace AGS.Characters
 		{
 			if (move == Vector3.zero)
 				return;
+			move = Vector3.Scale (move, m_VectorMask).normalized;
 			// convert the world relative moveInput vector into a local-relative
 			// turn amount and forward amount required to head in the desired
 			// direction.
@@ -434,15 +548,39 @@ namespace AGS.Characters
 			move = new Vector3 (move.x, 0, move.z);
 			Vector3 moveAmount = Vector3.zero;
 			moveAmount = move * Time.deltaTime * m_MoveSpeed;
-			m_Rigidbody.MovePosition (m_Rigidbody.position + moveAmount);
-			
+			//m_Rigidbody.MovePosition (m_Rigidbody.position + moveAmount);
+			//m_Rigidbody.AddRelativeForce(move * m_MoveSpeed);
+			transform.position = transform.position + moveAmount;
 		}
-		
+
+		/*void HandleGroundedMovement(bool crouch, bool jump)
+		{
+			// check whether conditions are right to allow a jump:
+			if (jump && !crouch && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
+			{
+				// jump!
+				m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, m_JumpPower, m_Rigidbody.velocity.z);
+				m_IsGrounded = false;
+				m_Animator.applyRootMotion = false;
+				m_GroundCheckDistance = 0.1f;
+			}
+		}*/
+
 		void ApplyExtraTurnRotation()
 		{
 			// help the character turn faster (this is in addition to root rotation in the animation)
-			float turnSpeed = Mathf.Lerp(m_StationaryTurnSpeed, m_MovingTurnSpeed, m_ForwardAmount);
-			transform.Rotate(0, m_TurnMultiplier * m_TurnAmount * turnSpeed * Time.deltaTime, 0);
+			//float turnSpeed = Mathf.Lerp(m_StationaryTurnSpeed, m_MovingTurnSpeed, m_ForwardAmount);
+			//transform.Rotate(0, m_TurnMultiplier * m_TurnAmount * turnSpeed * Time.deltaTime, 0);
+			if (m_TurnAmount > 0f)
+				pn = 1f;
+			else if (m_TurnAmount < 0f)
+				pn = -1f;
+			else
+				pn = 0f;
+			float amount_current_frame = m_MovingTurnSpeed * Time.deltaTime;
+			float turn_amount = Mathf.Abs(m_TurnAmount) * 180f / Mathf.PI;
+			float final_turn = amount_current_frame >= turn_amount?turn_amount:amount_current_frame;
+			transform.Rotate(0, final_turn * pn, 0);
 		}
 		
 		/*public void OnAnimatorMove()
@@ -521,7 +659,7 @@ namespace AGS.Characters
 			}
 		}
 
-		protected abstract void OnDie ();
+		protected virtual void OnDie (){}
 
 		public bool IsDead()
 		{

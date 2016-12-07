@@ -22,7 +22,7 @@ namespace AGS.Characters
 			m_TargetDirectionUpdateRate = GameConstants.HumanKnight_TargetDirectionUpdateRate;
 			m_TurnMultiplier            = GameConstants.HumanKnight_TurnMultiplier;
 			m_MoveSpeed                 = GameConstants.HumanKnight_MoveSpeed;
-
+			m_Agent.speed               = m_MoveSpeed;
 		}
 		
 		protected override void ActionCallBack(string name)
@@ -47,6 +47,7 @@ namespace AGS.Characters
 
 		protected override void OnDie()
 		{
+			base.OnDie ();
 			ItemManager.Instance ().GenerateItem (ItemIDs.Item_Apple, transform.position);
 			ItemManager.Instance ().GenerateItem (ItemIDs.Item_Apple, transform.position);
 		}

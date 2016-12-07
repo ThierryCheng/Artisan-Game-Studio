@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace AGS.Spawn
+namespace AGS.World
 {
 	public class SpawnPoint : MonoBehaviour {
 

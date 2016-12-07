@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
-using AGS.Spawn;
+using AGS.World;
 
 namespace AGS.Editors
 {
@@ -268,7 +268,7 @@ namespace AGS.Editors
 					obj.transform.position = new Vector3(_hitInfo.point.x, _hitInfo.point.y + height, _hitInfo.point.z);
 					obj.transform.Rotate (0, rotation, 0);
 					if (scale != 1f) {
-						Debug.Log ("change scale " + scale);
+						//Debug.Log ("change scale " + scale);
 						obj.transform.localScale = new Vector3(scale, scale, scale);
 					}
 					Undo.RegisterCreatedObjectUndo(obj, "Create " + obj.name);
@@ -324,7 +324,8 @@ namespace AGS.Editors
 		private bool RandomSpawn(Vector3 position, float height)
 		{
 			float random = Random.value;
-			float scale = Random.value * scaleElement * 2 + (1f - scaleElement);
+			//float scale = Random.value * scaleElement * 2 + (1f - scaleElement);
+			float scale = Random.value * scaleElement * 2 + 1f;
 			float rotation = Mathf.Lerp (0f, 360f, random);
 			return SpawnOne (position, rotation, height, scale);
 		}
@@ -333,10 +334,11 @@ namespace AGS.Editors
 		{
 			float random = Random.value;
 			float rotation = Mathf.Lerp (0f, 360f, random);
-			return SpawnOneLand (position, rotation, height);
+			float scale = Random.value * 2f + 1f;
+			return SpawnOneLand (position, rotation, height, scale);
 		}
 
-		private bool SpawnOneLand(Vector3 position, float rotation, float height)
+		private bool SpawnOneLand(Vector3 position, float rotation, float height, float scale)
 		{
 			GameObject obj;
 			string folderName = t.name + "_folder";
@@ -349,6 +351,11 @@ namespace AGS.Editors
 			obj = (GameObject)EditorUtility.InstantiatePrefab(t);
 			obj.transform.position = new Vector3(_hitInfo.point.x, _hitInfo.point.y + height + 5f, _hitInfo.point.z);
 			obj.transform.Rotate (0, rotation, 0);
+			if (scale != 1f) {
+				//Debug.Log ("!!!!!!!change scale " + scale);
+				obj.transform.localScale = new Vector3(scale, 1f, scale);
+				//Debug.Log ("!!!!!!!changed scale " + obj.transform.localScale);
+			}
 		    Undo.RegisterCreatedObjectUndo(obj, "Create " + obj.name);
 			obj.transform.parent = folder.transform;
 			return true;

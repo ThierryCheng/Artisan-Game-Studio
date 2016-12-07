@@ -31,7 +31,8 @@ namespace AGS.Editors
 				new string[]{"Frozen_Tile_3", "Prefabs/Tile/Frozen_Tile_3"},
 				new string[]{"Grass", "Prefabs/Scene Model/Grassland/Grass"},
 				new string[]{"Camel thorn", "Prefabs/Scene Model/Wasteland/Camel thorn"},
-				new string[]{"WitheredTree", "Prefabs/Scene Model/Wasteland/WitheredTree"}
+				new string[]{"WitheredTree", "Prefabs/Scene Model/Wasteland/WitheredTree"},
+				new string[]{"SpawnPoint", "Prefabs/World/SpawnPoint"}
 			};
 
 

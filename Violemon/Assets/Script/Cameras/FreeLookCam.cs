@@ -19,8 +19,8 @@ namespace AGS.Cameras
         //[SerializeField] private float m_TiltMin = 45f;                       // The minimum value of the x axis rotation of the pivot.
         [SerializeField] private bool m_LockCursor = false;                   // Whether the cursor should be hidden and locked.
 		[SerializeField] private bool m_LockView = false;
-        //[SerializeField] private bool m_VerticalAutoReturn = false;           // set wether or not the vertical axis should auto return
 
+        //[SerializeField] private bool m_VerticalAutoReturn = false;           // set wether or not the vertical axis should auto return
         private float m_LookAngle;                    // The rig's y axis rotation.
         private float m_TiltAngle;                    // The pivot's x axis rotation.
         //private const float k_LookDistance = 100f;    // How far in front of the pivot the character's look target is.
@@ -32,8 +32,8 @@ namespace AGS.Cameras
         {
             base.Awake();
             // Lock or unlock the cursor.
-            Cursor.lockState = m_LockCursor ? CursorLockMode.Locked : CursorLockMode.None;
-            Cursor.visible = !m_LockCursor;
+            //Cursor.lockState = m_LockCursor ? CursorLockMode.Locked : CursorLockMode.None;
+            //Cursor.visible = !m_LockCursor;
 			//m_PivotEulers = m_Pivot.rotation.eulerAngles;
 
 	        //m_PivotTargetRot = m_Pivot.transform.localRotation;
@@ -43,19 +43,20 @@ namespace AGS.Cameras
 
         protected void Update()
         {
-            HandleRotationMovement();
+            /*HandleRotationMovement();
             if (m_LockCursor && Input.GetMouseButtonUp(0))
             {
                 Cursor.lockState = m_LockCursor ? CursorLockMode.Locked : CursorLockMode.None;
                 Cursor.visible = !m_LockCursor;
-            }
+            }*/
+			
         }
 
 
         private void OnDisable()
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            //Cursor.lockState = CursorLockMode.None;
+            //Cursor.visible = true;
         }
 
 
@@ -63,7 +64,17 @@ namespace AGS.Cameras
         {
             if (m_Target == null) return;
             // Move the rig towards target position.
-            //transform.position = Vector3.Lerp(transform.position, m_Target.position, deltaTime*m_MoveSpeed);
+            
+			//case 1:
+			//transform.position = Vector3.Lerp(transform.position, m_Target.position, deltaTime*m_MoveSpeed);
+			//Debug.Log(m_Target.position);
+
+			//case: 2:
+			//float ty = (m_Target.position.y - transform.position.y) / 50f;
+			//Vector3 movement = new Vector3(m_Target.position.x, ty, m_Target.position.z);
+			//transform.position = movement;
+
+			//case: 3:
 			transform.position = m_Target.position;
         }
 
